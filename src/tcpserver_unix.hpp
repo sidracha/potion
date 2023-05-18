@@ -1,6 +1,13 @@
 #ifndef TCPSERVER_UNIX_H_INCLUDED
 #define TCPSERVER_UNIX_H_INCLUDED
 
+#include <stdio.h>
+#include <iostream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+
 class TCPServer {
   private:
     int portno;

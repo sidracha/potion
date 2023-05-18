@@ -58,37 +58,11 @@ void TCPServer::send(const std::string& message) {
 
 void TCPServer::closeConnection() {
   close(newsockfd);
-  close(sockfd);
 }
+
 
 void TCPServer::error(const char *msg) {
   perror(msg);
     exit(1);
 }
-
-int main (int argc, char* argv[]) {
-  if (argc < 2) {
-    return 1;
-  }
-
-  int port = std::stoi(argv[1]);
-  TCPServer server(port);
-  std::string response, data;
-  while (1) {
-    server.acceptConnection();
-    data = server.receive();
-
-    std::cout << data << std::endl;
-    response = "HTTP/1.1 200 OK\r\n"
-                           "Content-Type: text/plain\r\n"
-                           "Content-Length: 5\r\n"
-                           "\r\n"
-                           "Hello\n";
-    server.send(response);
-      
-  }
-  
-  return 0;
-
- }
 
