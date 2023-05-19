@@ -31,15 +31,30 @@ TCPServer::TCPServer(int port) {
 void TCPServer::acceptConnection() {
   socklen_t clilen = sizeof(cli_addr);
   newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-  std::cout << "connected\n";
   if (newsockfd < 0) {
     error("ERROR on accept");
   }
+
+
 }
 
-std::string TCPServer::receive() {
+std::string TCPServer::receive(int timeout_val) {
   char buffer[256];
   memset(buffer, 0, sizeof(buffer));
+
+  struct timeval timeout;
+  timeout.tv_sec = timeout_val;
+  timeout.tv_usec = 0;
+
+  fd_set readSet;
+  FD_ZERO(&readSet);
+  FD_SET(newsockfd, &readSet);
+  int activity = select(newsockfd + 1, &readSet, nullptr, nullptr, &timeout);
+
+  if (activity == 0) {
+    return "";
+  }
+
   int n = read(newsockfd, buffer, 255);
   if (n < 0) {
     error("ERROR reading from socket");

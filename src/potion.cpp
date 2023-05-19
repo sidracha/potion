@@ -50,9 +50,16 @@ void PotionApp::run () {
   TCPServer server(port);
   while (1) {
     server.acceptConnection();
-    data = server.receive();
-    std::cout << data << std::endl;
-    server.send(httpResponse);
+    data = server.receive(1);
+    if (data == "") {
+      std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
+      server.send(alt_response);
+      
+    } else {
+      std::cout << data << std::endl;
+      server.send(httpResponse);
+      
+    }
     server.closeConnection();
   }
 

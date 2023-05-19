@@ -19,7 +19,7 @@ class TCPServer {
   public:
     TCPServer(int port);
     void acceptConnection();
-    std::string receive();
+    std::string receive(int timeout_val);
     void send(const std::string& message);
     void closeConnection();
   
