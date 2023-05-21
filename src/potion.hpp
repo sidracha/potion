@@ -7,7 +7,7 @@
 
 #include "tcpserver_unix.hpp"
 
-typedef int route_handler_func_t(int x);  
+typedef int route_handler_func_t(int);  
 
 class PotionApp {
   private:
