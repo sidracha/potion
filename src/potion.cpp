@@ -2,9 +2,9 @@
 #include <iostream>
 #include <cstdlib>
 
-#include "potion.hpp"
-#include "tcpserver_unix.hpp"
-#include "threading.hpp"
+#include "../includes/potion.hpp"
+#include "../includes/tcpserver_unix.hpp"
+#include "../includes/threading.hpp"
 
 
 void requestHandler(int socket, TCPServer server) {

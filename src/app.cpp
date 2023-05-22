@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "potion.hpp"
+#include "../includes/potion.hpp"
 
 
 int main () {
