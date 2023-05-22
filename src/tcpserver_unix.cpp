@@ -8,9 +8,9 @@
 
 #include "tcpserver_unix.hpp"
 
-TCPServer::TCPServer(int port) {
+TCPServer::TCPServer(int port, size_t read_size_p) {
+  read_size = read_size_p;
   portno = port;
-
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
     error("ERROR opening socket");
@@ -28,19 +28,21 @@ TCPServer::TCPServer(int port) {
   listen(sockfd, 5);
 }
 
-void TCPServer::acceptConnection() {
+int TCPServer::acceptConnection() {
+  int socket;
   socklen_t clilen = sizeof(cli_addr);
-  newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
-  if (newsockfd < 0) {
+  socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
+  if (socket < 0) {
     error("ERROR on accept");
   }
-
+  return socket;
 
 }
 
-std::string TCPServer::receive(int timeout_val) {
-  char buffer[256];
-  memset(buffer, 0, sizeof(buffer));
+receive_struct_t* TCPServer::receive(int timeout_val, int socket) {
+  char * buffer = new char[read_size]; 
+
+  memset(buffer, 0, read_size);
 
   struct timeval timeout;
   timeout.tv_sec = timeout_val;
@@ -48,31 +50,37 @@ std::string TCPServer::receive(int timeout_val) {
 
   fd_set readSet;
   FD_ZERO(&readSet);
-  FD_SET(newsockfd, &readSet);
-  int activity = select(newsockfd + 1, &readSet, nullptr, nullptr, &timeout);
-
+  FD_SET(socket, &readSet);
+  int activity = select(socket + 1, &readSet, nullptr, nullptr, &timeout);
+  
+  receive_struct_t* receiveStruct = new receive_struct_t();
+  
   if (activity == 0) {
-    return "";
+    receiveStruct->bytes_read = 0; //if no bytes are read withing timeout, return
+    return receiveStruct;
   }
 
-  int n = read(newsockfd, buffer, 255);
+  int n = read(socket, buffer, 255);
   if (n < 0) {
     error("ERROR reading from socket");
   }
 
-  return std::string(buffer);
+  receiveStruct->buffer = buffer;
+  receiveStruct->bytes_read = n;
+
+  return receiveStruct;
     
 }
 
-void TCPServer::send(const std::string& message) {
-  int n = write(newsockfd, message.c_str(), message.length());
+void TCPServer::send(const std::string& message, int socket) {
+  int n = write(socket, message.c_str(), message.length());
   if (n < 0) {
     error("ERROR writing to socket");
   } 
 }
 
-void TCPServer::closeConnection() {
-  close(newsockfd);
+void TCPServer::closeConnection(int socket) {
+  close(socket);
 }
 
 
@@ -80,4 +88,5 @@ void TCPServer::error(const char *msg) {
   perror(msg);
     exit(1);
 }
+
 

@@ -4,20 +4,11 @@
 
 #include "potion.hpp"
 #include "tcpserver_unix.hpp"
+#include "threading.hpp"
 
-void PotionApp::set_route (std::string route, route_handler_func_t* func) {
-  function_map[route] = func;
-}
 
-int PotionApp::execute_function (std::string route) {
-  auto func = function_map[route];
-  int result = func(5);
-  return result;
-}
-
-void PotionApp::run () {
-  int port = 8080;
-      
+void requestHandler(int socket, TCPServer server) {
+    
   std::string httpResponse = R"(HTTP/1.1 200 OK
   Content-Type: text/html; charset=utf-8
   Content-Length: 55743
@@ -46,21 +37,47 @@ void PotionApp::run () {
   </body>
   </html>
   )";
-  std::string data;
-  TCPServer server(port);
-  while (1) {
-    server.acceptConnection();
-    data = server.receive(1);
-    if (data == "") {
-      std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
-      server.send(alt_response);
-      
-    } else {
-      std::cout << data << std::endl;
-      server.send(httpResponse);
-      
-    }
-    server.closeConnection();
+
+  receive_struct_t* receiveStruct = server.receive(60, socket);
+  if (receiveStruct->bytes_read == 0) {
+    std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
+    server.send(alt_response, socket);
+    server.closeConnection(socket);
+    return; 
+  } 
+  for (int i = 0; i < receiveStruct->bytes_read; i++) {
+    std::cout << receiveStruct->buffer[i];
+
   }
+  std::cout << std::endl;
+  
+  server.send(httpResponse, socket);
+  server.closeConnection(socket); 
+  
 
 }
+
+void PotionApp::set_route (std::string route, route_handler_func_t* func) {
+  function_map[route] = func;
+}
+
+int PotionApp::execute_function (std::string route) {
+  auto func = function_map[route];
+  int result = func(5);
+  return result;
+}
+
+void PotionApp::run () {
+  int port = 8080;
+  TCPServer server(port, 256);
+  ThreadPool thread_pool; 
+  thread_pool.startThreads(10, &requestHandler, server);
+
+  while (1) {
+    int socket = server.acceptConnection();
+    thread_pool.addJob(socket);
+  } 
+
+
+}
+

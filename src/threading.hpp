@@ -1,7 +1,15 @@
 #ifndef THREADING_H_INCLUDED
 #define THREADING_H_INCLUDED
 
-typedef void request_handler_function_t(int);
+#include <queue>
+#include <mutex>
+#include <vector>
+#include <condition_variable>
+#include <thread>
+
+#include "tcpserver_unix.hpp"
+
+typedef void request_handler_function_t(int, TCPServer server);
 
 
 template <class T>
@@ -26,9 +34,9 @@ class ThreadPool {
 
   public:
 
-    void startThreads(int num_threads, request_handler_function_t* requestHandler);
-    void worker(request_handler_function_t* requestHandler);
-
+    void startThreads(int num_threads, request_handler_function_t* requestHandler, TCPServer server);
+    void worker(request_handler_function_t* requestHandler, TCPServer server);
+    void addJob(int socket);
 };
 
 
