@@ -53,7 +53,7 @@ void requestHandler(int socket, TCPServer server) {
   
   server.send(httpResponse, socket);
   server.closeConnection(socket); 
-  
+  delete receiveStruct;  
 
 }
 
