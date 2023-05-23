@@ -7,10 +7,12 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <vector>
+#include <cstddef>
 
 typedef struct receive_struct_t {
-  char * buffer;
-  int bytes_read;
+  std::vector<std::byte>* buffer;
+  size_t bytes_read;
 
 } receive_struct_t;
 
@@ -18,15 +20,13 @@ class TCPServer {
   private:
     int portno;
     int sockfd;
-    int newsockfd;
     sockaddr_in serv_addr;
     sockaddr_in cli_addr;
-    size_t read_size;
 
   public:
-    TCPServer(int port, size_t read_size_p);
+    TCPServer(int port);
     int acceptConnection();
-    receive_struct_t* receive(int timeout_val, int socket); //timeout val in seconds
+    receive_struct_t* receive(int timeout_val, int socket, size_t read_size); //timeout val in seconds
     void send(const std::string& message, int socket);
     void closeConnection(int socket);
   

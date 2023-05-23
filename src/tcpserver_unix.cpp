@@ -5,18 +5,17 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <cstring>
+#include <cstddef>
+#include <vector>
 
 #include "../includes/tcpserver_unix.hpp"
 
-TCPServer::TCPServer(int port, size_t read_size_p) {
-  read_size = read_size_p;
-  portno = port;
+TCPServer::TCPServer(int port) : portno(port){
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if (sockfd < 0) {
     error("ERROR opening socket");
   }
 
-  memset((char *) &serv_addr, 0, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
@@ -39,10 +38,9 @@ int TCPServer::acceptConnection() {
 
 }
 
-receive_struct_t* TCPServer::receive(int timeout_val, int socket) {
-  char * buffer = new char[read_size]; 
-
-  memset(buffer, 0, read_size);
+receive_struct_t* TCPServer::receive(int timeout_val, int socket, size_t read_size) {
+  //char * buffer = new char[read_size]; 
+  std::vector<std::byte> *buffer = new std::vector<std::byte>(read_size);
 
   struct timeval timeout;
   timeout.tv_sec = timeout_val;
@@ -51,16 +49,37 @@ receive_struct_t* TCPServer::receive(int timeout_val, int socket) {
   fd_set readSet;
   FD_ZERO(&readSet);
   FD_SET(socket, &readSet);
-  int activity = select(socket + 1, &readSet, nullptr, nullptr, &timeout);
   
   receive_struct_t* receiveStruct = new receive_struct_t();
+
+  int activity = select(socket + 1, &readSet, nullptr, nullptr, &timeout); 
+  //receive_struct_t* receiveStruct = new receive_struct_t();
+  
   
   if (activity == 0) {
     receiveStruct->bytes_read = 0; //if no bytes are read withing timeout, return
     return receiveStruct;
   }
 
-  int n = read(socket, buffer, 255);
+  int n;
+  while (1) {
+    (*buffer).resize((*buffer).size() + read_size);
+    n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
+    //std::cout << n << std::endl;
+    if (n < 0) {
+      error("ERROR reading from socket");
+    }
+    if ((size_t)n < read_size) {
+      break;
+    }
+  }
+  size_t bytes_read = (*buffer).size() - read_size + n;
+  (*buffer).resize(bytes_read);
+  receiveStruct->buffer = buffer;
+  receiveStruct->bytes_read = bytes_read;
+  return receiveStruct;
+
+  //int n = read(socket, buffer, read_size);
   if (n < 0) {
     error("ERROR reading from socket");
   }

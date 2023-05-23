@@ -37,20 +37,25 @@ void requestHandler(int socket, TCPServer server) {
   </body>
   </html>
   )";
-
-  receive_struct_t* receiveStruct = server.receive(60, socket);
+  //std::cout << "here\n";
+  receive_struct_t* receiveStruct = server.receive(60, socket, 1028);
   if (receiveStruct->bytes_read == 0) {
+    std::cout << "here\n";
     std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
     server.send(alt_response, socket);
     server.closeConnection(socket);
+    delete receiveStruct;
     return; 
-  } 
-  for (int i = 0; i < receiveStruct->bytes_read; i++) {
-    std::cout << receiveStruct->buffer[i];
-
   }
-  std::cout << std::endl;
-  
+  //for (int i = 0; i < receiveStruct->bytes_read; i++) {
+    //std::cout << receiveStruct->buffer[i];
+
+  //}
+  //std::cout << std::endli;
+  //std::byte b = (*receiveStruct->buffer)[0]; 
+  std::byte b{42};
+  //std::cout << static_cast<char>(b) << std::endl;
+  std::cout << "here\n";
   server.send(httpResponse, socket);
   server.closeConnection(socket); 
   delete receiveStruct;  
@@ -69,7 +74,7 @@ int PotionApp::execute_function (std::string route) {
 
 void PotionApp::run () {
   int port = 8080;
-  TCPServer server(port, 256);
+  TCPServer server(port);
   ThreadPool thread_pool; 
   thread_pool.startThreads(10, &requestHandler, server);
 
