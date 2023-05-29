@@ -1,13 +1,42 @@
 #include <map>
 #include <iostream>
 #include <cstdlib>
+#include <map>
 
 #include "../includes/potion.hpp"
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/threading.hpp"
+#include "../includes/http.hpp"
 
 
-void requestHandler(int socket, TCPServer server) {
+
+get_route_handler_func_struct_t PotionApp::get_route_handler_func(Request* request) {
+  std::string method = request->get_method();
+
+  get_route_handler_func_struct_t checkStruct;
+  checkStruct.is_valid_method = true;
+  
+
+  if (method == "GET") {}
+  else if (method == "HEAD") {}
+  else if (method == "POST") {}
+  else if (method == "PUT") {}
+  else if (method == "DELETE") {}
+  else if (method == "CONNECT") {}
+  else if (method == "OPTIONS") {}
+  else if (method == "TRACE") {}
+  else if (method == "PATCH") {}
+  else {checkStruct.is_valid_method = false; return checkStruct;}
+
+}
+
+int execute_handler (Request* request) {
+  std::string method = request->get_method();
+  
+
+}
+
+void request_handler(int socket, TCPServer server) {
     
   std::string httpResponse = R"(HTTP/1.1 200 OK
   Content-Type: text/html; charset=utf-8
@@ -37,52 +66,40 @@ void requestHandler(int socket, TCPServer server) {
   </body>
   </html>
   )";
-  //std::cout << "here\n";
-  receive_struct_t* receiveStruct = server.receive(60, socket, 1028);
-  if (receiveStruct->bytes_read == 0) {
-    std::cout << "here\n";
+  receive_struct_t receiveStruct = server.receive(60, socket, 1028);
+  if (receiveStruct.bytes_read == 0) {
     std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
     server.send(alt_response, socket);
-    server.closeConnection(socket);
-    delete receiveStruct;
+    server.close_connection(socket);
+    delete receiveStruct.buffer;
     return; 
   }
-  //for (int i = 0; i < receiveStruct->bytes_read; i++) {
-    //std::cout << receiveStruct->buffer[i];
-
-  //}
-  //std::cout << std::endli;
-  //std::byte b = (*receiveStruct->buffer)[0]; 
-  std::byte b{42};
-  //std::cout << static_cast<char>(b) << std::endl;
-  std::cout << "here\n";
   server.send(httpResponse, socket);
-  server.closeConnection(socket); 
-  delete receiveStruct;  
+  server.close_connection(socket); 
+  
+  Request* request;
+  request = new Request(receiveStruct);
 
+  delete receiveStruct.buffer;
 }
 
-void PotionApp::set_route (std::string route, route_handler_func_t* func) {
-  function_map[route] = func;
-}
 
-int PotionApp::execute_function (std::string route) {
-  auto func = function_map[route];
-  int result = func(5);
-  return result;
-}
+
 
 void PotionApp::run () {
   int port = 8080;
   TCPServer server(port);
-  ThreadPool thread_pool; 
-  thread_pool.startThreads(10, &requestHandler, server);
+  ThreadPool threadPool; 
+  threadPool.start_threads(10, &request_handler, server);
 
   while (1) {
-    int socket = server.acceptConnection();
-    thread_pool.addJob(socket);
+    int socket = server.accept_connection();
+    threadPool.add_job(socket);
   } 
 
 
 }
+
+
+
 

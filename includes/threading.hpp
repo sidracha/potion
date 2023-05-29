@@ -9,7 +9,9 @@
 
 #include "tcpserver_unix.hpp"
 
-typedef void request_handler_function_t(int, TCPServer server);
+//typedef void request_handler_function_t(int, TCPServer);
+
+using request_handler_function_t = void (int, TCPServer);
 
 
 template <class T>
@@ -34,9 +36,9 @@ class ThreadPool {
 
   public:
 
-    void startThreads(int num_threads, request_handler_function_t* requestHandler, TCPServer server);
+    void start_threads(int num_threads, request_handler_function_t* requestHandler, TCPServer server);
     void worker(request_handler_function_t* requestHandler, TCPServer server);
-    void addJob(int socket);
+    void add_job(int socket);
 };
 
 

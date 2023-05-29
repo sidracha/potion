@@ -27,7 +27,7 @@ TCPServer::TCPServer(int port) : portno(port){
   listen(sockfd, 5);
 }
 
-int TCPServer::acceptConnection() {
+int TCPServer::accept_connection() {
   int socket;
   socklen_t clilen = sizeof(cli_addr);
   socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
@@ -38,10 +38,9 @@ int TCPServer::acceptConnection() {
 
 }
 
-receive_struct_t* TCPServer::receive(int timeout_val, int socket, size_t read_size) {
+receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_size) {
   //char * buffer = new char[read_size]; 
   std::vector<std::byte> *buffer = new std::vector<std::byte>(read_size);
-
   struct timeval timeout;
   timeout.tv_sec = timeout_val;
   timeout.tv_usec = 0;
@@ -50,14 +49,14 @@ receive_struct_t* TCPServer::receive(int timeout_val, int socket, size_t read_si
   FD_ZERO(&readSet);
   FD_SET(socket, &readSet);
   
-  receive_struct_t* receiveStruct = new receive_struct_t();
+  receive_struct_t receiveStruct;
 
   int activity = select(socket + 1, &readSet, nullptr, nullptr, &timeout); 
   //receive_struct_t* receiveStruct = new receive_struct_t();
   
   
   if (activity == 0) {
-    receiveStruct->bytes_read = 0; //if no bytes are read withing timeout, return
+    receiveStruct.bytes_read = 0; //if no bytes are read within timeout, return
     return receiveStruct;
   }
 
@@ -75,19 +74,10 @@ receive_struct_t* TCPServer::receive(int timeout_val, int socket, size_t read_si
   }
   size_t bytes_read = (*buffer).size() - read_size + n;
   (*buffer).resize(bytes_read);
-  receiveStruct->buffer = buffer;
-  receiveStruct->bytes_read = bytes_read;
+  receiveStruct.buffer = buffer;
+  receiveStruct.bytes_read = bytes_read;
   return receiveStruct;
 
-  //int n = read(socket, buffer, read_size);
-  if (n < 0) {
-    error("ERROR reading from socket");
-  }
-
-  receiveStruct->buffer = buffer;
-  receiveStruct->bytes_read = n;
-
-  return receiveStruct;
     
 }
 
@@ -98,7 +88,7 @@ void TCPServer::send(const std::string& message, int socket) {
   } 
 }
 
-void TCPServer::closeConnection(int socket) {
+void TCPServer::close_connection(int socket) {
   close(socket);
 }
 
@@ -107,5 +97,6 @@ void TCPServer::error(const char *msg) {
   perror(msg);
     exit(1);
 }
+
 
 
