@@ -5,39 +5,12 @@
 
 #include "../includes/potion.hpp"
 #include "../includes/tcpserver_unix.hpp"
-#include "../includes/threading.hpp"
 #include "../includes/http.hpp"
 
 
 
-get_route_handler_func_struct_t PotionApp::get_route_handler_func(Request* request) {
-  std::string method = request->get_method();
+void PotionApp::handle_request(int socket, TCPServer* server) {
 
-  get_route_handler_func_struct_t checkStruct;
-  checkStruct.is_valid_method = true;
-  
-
-  if (method == "GET") {}
-  else if (method == "HEAD") {}
-  else if (method == "POST") {}
-  else if (method == "PUT") {}
-  else if (method == "DELETE") {}
-  else if (method == "CONNECT") {}
-  else if (method == "OPTIONS") {}
-  else if (method == "TRACE") {}
-  else if (method == "PATCH") {}
-  else {checkStruct.is_valid_method = false; return checkStruct;}
-
-}
-
-int execute_handler (Request* request) {
-  std::string method = request->get_method();
-  
-
-}
-
-void request_handler(int socket, TCPServer server) {
-    
   std::string httpResponse = R"(HTTP/1.1 200 OK
   Content-Type: text/html; charset=utf-8
   Content-Length: 55743
@@ -66,39 +39,41 @@ void request_handler(int socket, TCPServer server) {
   </body>
   </html>
   )";
-  receive_struct_t receiveStruct = server.receive(60, socket, 1028);
+  receive_struct_t receiveStruct = server->receive(60, socket, 1028);
   if (receiveStruct.bytes_read == 0) {
     std::string alt_response = "HTTP/1.1 504 Gateway Timeout";
-    server.send(alt_response, socket);
-    server.close_connection(socket);
+    server->send(alt_response, socket);
+    server->close_connection(socket);
     delete receiveStruct.buffer;
-    return; 
+    return;
   }
-  server.send(httpResponse, socket);
-  server.close_connection(socket); 
-  
+  server->send(httpResponse, socket);
+  server->close_connection(socket);
+
   Request* request;
   request = new Request(receiveStruct);
 
   delete receiveStruct.buffer;
+  delete request;
 }
 
 
 
+//void PotionApp::run () {
+  //int port = 8080;
+  //TCPServer* server;
+  //server = new TCPServer(port);
+  //ThreadPool threadPool;
 
-void PotionApp::run () {
-  int port = 8080;
-  TCPServer server(port);
-  ThreadPool threadPool; 
-  threadPool.start_threads(10, &request_handler, server);
+  //threadPool.start_threads(10, &request_handler, server);
 
-  while (1) {
-    int socket = server.accept_connection();
-    threadPool.add_job(socket);
-  } 
+  //while (1) {
+    //int socket = server->accept_connection();
+    //threadPool.add_job(socket);
+  //}
+  //delete server;
 
 
-}
 
 
 

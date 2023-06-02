@@ -8,10 +8,9 @@
 #include <thread>
 
 #include "tcpserver_unix.hpp"
+#include "potion.hpp"
 
 //typedef void request_handler_function_t(int, TCPServer);
-
-using request_handler_function_t = void (int, TCPServer);
 
 
 template <class T>
@@ -36,8 +35,8 @@ class ThreadPool {
 
   public:
 
-    void start_threads(int num_threads, request_handler_function_t* requestHandler, TCPServer server);
-    void worker(request_handler_function_t* requestHandler, TCPServer server);
+    void start_threads(int num_threads, PotionApp* app, TCPServer* server);
+    void worker(PotionApp* app, TCPServer* server);
     void add_job(int socket);
 };
 
