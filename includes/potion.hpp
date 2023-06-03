@@ -1,28 +1,30 @@
-#ifndef POTION__H_INCLUDED
-#define POTION__H_INCLUDED
+#ifndef TEST_H_INCLUDED
+#define TEST_H_INCLUDED
 
-#include <map>
 #include <iostream>
-#include <cstdlib>
 
+#include "potion.hpp"
 #include "tcpserver_unix.hpp"
+#include "threading.hpp"
 
-//typedef int route_handler_func_t(int);
-//typedef void route_func_t(std::string, route_handler_func_t*);
-//typedef std::map<std::string, route_handler_func_t*> function_map_to;
 
-using route_handler_func_t = int (int);
-
-class PotionApp {
+class Potion {
+  
   private:
+    std::vector<std::string> vect;
+    RoutingContainer rContainer;
 
   public:
     
-    void handle_request(int socket, TCPServer* server);
-    
     void run();
-
-
+    void add(std::string str) {vect.push_back(str);}
+    void print_vect () {
+      for (unsigned long i = 0; i < vect.size(); i++) {
+        std::cout << vect[i] << std::endl;
+      }
+    }
+    void set_get(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "GET");}
+    void set_post(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "POST");}
 };
 
 #endif
