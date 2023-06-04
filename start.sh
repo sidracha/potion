@@ -1,0 +1,3 @@
+echo starting...
+g++ app.cpp src/threading.cpp src/tcpserver_unix.cpp src/potion.cpp src/http.cpp src/routes.cpp
+./a.out
