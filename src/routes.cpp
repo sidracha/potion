@@ -47,18 +47,30 @@ void RoutingContainer::handle_request(int socket, TCPServer* server) {
     delete receiveStruct.buffer;
     return;
   }
-  server->send(httpResponse, socket);
-  std::string method = "GET";
+  //server->send(httpResponse, socket);
+  
+  Request request(receiveStruct);
+  std::string method = request.get_method();
   route_handler_func_t* func = route_map["/"][method];
   func(5);
+  server->send(httpResponse, socket);
+
 
   server->close_connection(socket);
 
-  //Request* request;
-  //request = new Request(receiveStruct);
 
   delete receiveStruct.buffer;
-  //delete request;
+}
+
+void RoutingContainer::set_route(std::string route, route_handler_func_t* func, std::string method) {
+  
+  if (route_map[route].count(method)) { //key exists
+    throw std::runtime_error("Muliple route definitions: " + method + " " + route);
+  }
+
+  route_map[route][method]= func;
+
+
 }
 
 

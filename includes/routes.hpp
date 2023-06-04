@@ -15,17 +15,14 @@ using route_handler_func_t = int (int);
 
 class RoutingContainer {
   private:
-  
-  protected:
-    std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map;
+    std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map; 
 
   public:
     
     void handle_request(int socket, TCPServer* server);
 
-    void set_route(std::string route, route_handler_func_t* func, std::string method) {route_map[route][method] = func;}
-    
-    void run();
+    void set_route(std::string route, route_handler_func_t* func, std::string method);
+   
 
 
 };

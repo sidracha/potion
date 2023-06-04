@@ -16,6 +16,7 @@ class Request {
     std::string get_method();
     std::string get_single_header(std::string key);
     std::map<std::string, std::string> get_headers();
+
     
 };
 

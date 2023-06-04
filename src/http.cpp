@@ -19,3 +19,19 @@ void Request::parse_headers() {
 
 }
 
+std::string Request::get_method () { //returns first word of request
+  std::string word = "";
+  //std::string req_body = "";
+
+  for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
+    char character = static_cast<char>((*receiveStruct.buffer)[i]);
+
+    if (character == ' ' || character == '\n' || character == '\t') {
+      return word;
+    }
+    word += character;
+    
+  }
+  return word;
+
+}

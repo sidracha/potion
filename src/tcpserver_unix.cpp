@@ -62,7 +62,9 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
 
   int n;
   while (1) {
-    (*buffer).resize((*buffer).size() + read_size);
+    if ((*buffer).size() != read_size) {
+      (*buffer).resize((*buffer).size() + read_size);
+    }
     n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
     //std::cout << n << std::endl;
     if (n < 0) {
