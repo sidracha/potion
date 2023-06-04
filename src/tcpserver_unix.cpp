@@ -62,20 +62,19 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
 
   int n;
   while (1) {
-    if ((*buffer).size() != read_size) {
-      (*buffer).resize((*buffer).size() + read_size);
-    }
     n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
-    //std::cout << n << std::endl;
     if (n < 0) {
       error("ERROR reading from socket");
     }
-    if ((size_t)n < read_size) {
+    (*buffer).resize((*buffer).size() + n - read_size);
+
+    if (static_cast<size_t>(n) < read_size) {
       break;
     }
+
+
   }
-  size_t bytes_read = (*buffer).size() - read_size + n;
-  (*buffer).resize(bytes_read);
+  size_t bytes_read = (*buffer).size();
   receiveStruct.buffer = buffer;
   receiveStruct.bytes_read = bytes_read;
   return receiveStruct;
