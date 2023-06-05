@@ -51,8 +51,9 @@ void RoutingContainer::handle_request(int socket, TCPServer* server) {
   
   Request request(receiveStruct);
   std::string method = request.get_method();
-  route_handler_func_t* func = route_map["/"]["GET"];
-  func(5);
+  std::cout << method << std::endl;
+  //route_handler_func_t* func = route_map["/"]["GET"];
+  //func(5);
   server->send(httpResponse, socket);
 
 
