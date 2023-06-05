@@ -3,13 +3,13 @@
 
 int handle_get(int num) {
   std::cout << "GET\n";
-  std::cout << num << std::endl;
+  //std::cout << num << std::endl;
   return 0;
 }
 
 int handle_post(int num) {
   std::cout << "POST\n";
-  std::cout << num << std::endl;
+  //std::cout << num << std::endl;
   return 0;
 } 
 

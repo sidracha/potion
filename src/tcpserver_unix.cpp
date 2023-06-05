@@ -75,6 +75,7 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
 
   }
   size_t bytes_read = (*buffer).size();
+  std::cout << bytes_read << ", " << (*buffer).size() << std::endl;
   receiveStruct.buffer = buffer;
   receiveStruct.bytes_read = bytes_read;
   return receiveStruct;
