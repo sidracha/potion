@@ -2,38 +2,73 @@
 #define TEST_H_INCLUDED
 
 #include <iostream>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <map>
 
-#include "potion.hpp"
 #include "tcpserver_unix.hpp"
-#include "threading.hpp"
 
 
-class Potion {
+class PotionApp {
   
+  using route_handler_func_t = void (PotionApp* app, int num);
+
   private:
-    std::vector<std::string> vect;
-    RoutingContainer rContainer;
+    
+    std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map;
+    TCPServer server; 
+    
 
   public:
     
+    PotionApp(int port);
+
     void run();
-    void add(std::string str) {vect.push_back(str);}
-    void print_vect () {
-      for (unsigned long i = 0; i < vect.size(); i++) {
-        std::cout << vect[i] << std::endl;
-      }
-    }
-    void set_get(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "GET");}
-    void set_head(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "HEAD");}
+    void print_num(int num);
+    void handle_request(int socket);
+
+    void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;} 
+
+};
+
+
+
+
+using request_handler_func_t =  void (PotionApp::*) ();
+
+
+template <class T>
+class BlockingQueue {
+  private:
+    std::queue<T> queue;
+    std::mutex mtx;
+    std::condition_variable cv;
+
+  public:
     
-    void set_post(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "POST");}
-    
-    void set_put(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "PUT");}
-    void set_delete(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "DELETE");}
-    void set_connect(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "CONNECT");}
-    void set_options(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "OPTIONS");}
-    void set_trace(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "TRACE");}
-    void set_patch(std::string route, route_handler_func_t* func) {rContainer.set_route(route, func, "PATCH");}
+  void push (T value);
+  T pop();
+
+};
+
+
+
+class ThreadPool {
+  
+  private:
+    std::vector<std::thread> threads;
+    BlockingQueue<int> b_queue;
+
+  public:
+
+    void start_threads(int num_threads, PotionApp* app);
+    void worker(PotionApp* app);
+    void add_job(int socket);
+
+
+
 };
 
 #endif

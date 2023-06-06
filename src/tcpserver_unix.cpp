@@ -57,6 +57,7 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
   
   if (activity == 0) {
     receiveStruct.bytes_read = 0; //if no bytes are read within timeout, return
+    receiveStruct.buffer = buffer;
     return receiveStruct;
   }
 
