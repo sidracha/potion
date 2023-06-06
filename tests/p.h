@@ -18,9 +18,6 @@ class Potion {
 };
 
 
-void Potion::handle() {
-  
-}
 
 using func_t = void (Potion::*) ();
 
@@ -36,6 +33,11 @@ void Threading::start_threads(func_t func) {
 
 void Potion::execute(pass_func_t* func) {
   func(5, this);
+}
+
+void Potion::handle () {
+  std::cout << "handle\n";
+
 }
 
 void Potion::run() {

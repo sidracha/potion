@@ -1,7 +1,7 @@
 
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/potion.hpp"
-#include "../includes/http.hpp"
+#include "../includes/request.hpp"
 
 #define KB 1024
 
@@ -40,10 +40,7 @@ void PotionApp::handle_request(int socket) {
       html_body + "\n"; 
   
 
-  std::cout << "here1\n";
-  receive_struct_t receiveStruct = server.receive(1, socket, 2*KB);
-  std::cout << "here2\n";
-  std::cout << (*receiveStruct.buffer).size() << std::endl;
+  receive_struct_t receiveStruct = server.receive(60, socket, 2*KB);
   
   if (receiveStruct.bytes_read == 0) {
     http_response = "HTTP/1.1 504 Gateway Timeout";
@@ -54,12 +51,14 @@ void PotionApp::handle_request(int socket) {
   }
 
   Request request(receiveStruct);
-  
+  std::string method = request.get_method();
+
   route_handler_func_t* func = route_map["/"]["GET"];
   func(this, 5);
+  
+
 
   server.send(http_response, socket);
   
-  //std::cout << http_response << std::endl;
   delete receiveStruct.buffer;
 }

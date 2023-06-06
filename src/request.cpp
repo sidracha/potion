@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "../includes/tcpserver_unix.hpp"
-#include "../includes/http.hpp"
+#include "../includes/request.hpp"
 
 void Request::parse_headers() {
   std::string request_str = ""; 
@@ -18,6 +18,10 @@ void Request::parse_headers() {
   
 
 }
+
+
+  
+  
 
 std::string Request::get_method () { //returns first word of request
   std::string word = "";
