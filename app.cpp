@@ -1,33 +1,17 @@
 #include "includes/potion.hpp"
-#include "fl.hpp"
 
-int handle_get(int num) {
-  std::cout << "GET\n";
-  //std::cout << num << std::endl;
-  return 0;
+void handle_get(PotionApp* app, int num) {
+  app->print_num(num);
 }
-
-int handle_post(int num) {
-  std::cout << "POST\n";
-  //std::cout << num << std::endl;
-  return 0;
-} 
-
 
 int main () {
   
-  Potion* app;
-  app = new Potion;
+  PotionApp app(8080);
   
-  
+  app.set_get("/", &handle_get);
 
-  app->set_get("/", &handle_get);
-  app->set_post("/", &handle_post);
+  app.run();
   
-
-  app->run();
-  
-  delete app;
 
   return 0;
 }

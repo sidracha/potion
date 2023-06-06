@@ -1,24 +1,65 @@
 
-#include "../includes/potion.hpp"
 #include "../includes/tcpserver_unix.hpp"
-#include "../includes/threading.hpp"
 #include "../includes/potion.hpp"
+#include "../includes/http.hpp"
 
+#define KB 1024
 
-void Potion::run () {
- 
-  int port = 8080;
+PotionApp::PotionApp(int port) : server(port) {
 
-  TCPServer* server;
-  server = new TCPServer(port);
+}
+
+void PotionApp::print_num(int num) {
+  std::cout << num << std::endl;
+}
+
+void PotionApp::run () {
+  
   ThreadPool threadPool;
-
-  threadPool.start_threads(10, &rContainer, server);
-
-  while (1) {
-    int socket = server->accept_connection();
+  threadPool.start_threads(10, this);
+  
+  while (1) { //entire loop of app
+    
+    int socket = server.accept_connection();
     threadPool.add_job(socket);
+
   }
 
+}
 
+
+void PotionApp::handle_request(int socket) {
+  
+    std::string html_body = "<html><body><h1>Hello, World!</h1></body></html>";
+
+    std::string http_response =
+      "HTTP/1.1 200 OK\n"
+      "Content-Type: text/html\n"
+      "Content-Length: " + std::to_string(html_body.length()) + "\n"
+      "\n" +
+      html_body + "\n"; 
+  
+
+  std::cout << "here1\n";
+  receive_struct_t receiveStruct = server.receive(1, socket, 2*KB);
+  std::cout << "here2\n";
+  std::cout << (*receiveStruct.buffer).size() << std::endl;
+  
+  if (receiveStruct.bytes_read == 0) {
+    http_response = "HTTP/1.1 504 Gateway Timeout";
+    server.send(http_response, socket);
+    server.close_connection(socket);
+    delete receiveStruct.buffer;
+    return;
+  }
+
+  Request request(receiveStruct);
+  
+  route_handler_func_t* func = route_map["/"]["GET"];
+  func(this, 5);
+
+  server.send(http_response, socket);
+  
+  //std::cout << http_response << std::endl;
+  delete receiveStruct.buffer;
 }
