@@ -1,11 +1,9 @@
 #include "includes/potion.hpp"
 
 void handle_get_home(PotionApp* app, int num) {
-  std::cout << "welcome home!\n";
-}
+  
+  return render("index.html");
 
-void handle_get_notebooks(PotionApp* app, int num) {
-  std::cout << "welcome to notebooks!\n";
 }
 
 

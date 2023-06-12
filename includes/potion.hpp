@@ -9,12 +9,14 @@
 #include <map>
 
 #include "tcpserver_unix.hpp"
+#include "response.hpp"
 
 
 class PotionApp {
   
-  using route_handler_func_t = void (PotionApp* app, int num);
-
+  //using route_handler_func_t = void (PotionApp* app, int num);
+  using route_handler_func_t = char* (PotionApp* app, int num);
+  
   private:
     
     std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map;
