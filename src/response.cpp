@@ -1,25 +1,43 @@
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 
 #include "../includes/response.hpp"
 
 namespace fs = std::filesystem;
 
-char* Response::send_string(std::string str) {
+route_struct_t send_string(std::string str) {
+  
+  std::string headers = 
+    "HTTP/1.1 200 OK\r\n"
+    "Content-Type: text/plain\r\n"
+    "\r\n";
 
-  return const_cast<char*>(str.c_str());
+  route_struct_t routeStruct;
+  char* buffer = new char[str.length() + headers.length()];
+  for (size_t i = 0; i < headers.length(); i++) {
+    buffer[i] = headers[i];
+  }
+  std::cout << str << std::endl;
+  for (size_t i = 0; i < str.length(); i++) {
+    buffer[i+headers.length()] = str[i];
+  }
+  
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = str.length() + headers.length();
+  return routeStruct;
 
 }
 
-char* Response::render(std::string file_path) {
-  
+route_struct_t render(std::string file_path) {
+  std::cout << "hello\n"; 
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
   
   std::string headers = 
     "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/html"
+    "Content-Type: text/html\r\n"
     "Content-Length: " + std::to_string(f_size) + "\r\n"
     "\r\n";
   
@@ -34,9 +52,9 @@ char* Response::render(std::string file_path) {
 
   std::ifstream file(p);
   file.read(buffer + header_len, f_size);
-  
-  return buffer;
-  
-  
 
+  route_struct_t routeStruct;
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = buffer_size;
+  return routeStruct;
 }

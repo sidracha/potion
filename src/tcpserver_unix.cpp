@@ -27,7 +27,7 @@ TCPServer::TCPServer(int port) : portno(port){
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
     error("ERROR on binding");
   }
-  
+  std::cout << "server running on port " + std::to_string(portno) << std::endl; 
   listen(sockfd, 5);
 }
 

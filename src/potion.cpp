@@ -56,16 +56,18 @@ void PotionApp::handle_request(int socket) {
   Request request(receiveStruct);
   request.parse_headers();
   
-  std::string method = request.get_method();
-  std::string route = request.get_route();
+  //std::string method = request.get_method();
+  //std::string route = request.get_route();
 
-    
-  route_handler_func_t* func = route_map["/"]["GET"];
-  char* resp = func(this, 5);
   
 
+  route_handler_func_t* func = route_map["/string"]["GET"];
+  route_struct_t routeStruct;
 
-  server.send_file(resp, resp.size(), socket);
-  server.close_connection(socket);  
+  routeStruct = func(this, 5);
+  
+  server.send_file(routeStruct.buffer, routeStruct.buffer_size, socket);
+  server.close_connection(socket);
+  delete routeStruct.buffer;
   delete receiveStruct.buffer;
 }

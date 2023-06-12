@@ -14,8 +14,7 @@
 
 class PotionApp {
   
-  //using route_handler_func_t = void (PotionApp* app, int num);
-  using route_handler_func_t = char* (PotionApp* app, int num);
+  using route_handler_func_t = route_struct_t (PotionApp* app, int num);
   
   private:
     
