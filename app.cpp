@@ -7,7 +7,7 @@ route_struct_t handle_get_home(PotionApp* app, int num) {
 }
 
 route_struct_t handle_get_string(PotionApp* app, int num) {
-  return send_string("Hello, World!");
+  return send_string("<h1>Hello, World!<h1>");
 }
 
 
