@@ -56,16 +56,30 @@ void PotionApp::handle_request(int socket) {
   Request request(receiveStruct);
   request.parse_headers();
   
-  //std::string method = request.get_method();
-  //std::string route = request.get_route();
-
+  std::string method = request.get_method();
+  std::string route = request.get_route();
   
 
-  route_handler_func_t* func = route_map["/string"]["GET"];
+  //method = method.substr(1, method.length()-1);
+  route = route.substr(0, route.length()-1);
+
+  std::cout << route << std::endl;  
+  route_handler_func_t* func;
+  try {
+    func = route_map[route][method];
+  } catch (const std::exception& e) {
+    std::cout << route << " " << method << " 404 or 405\n";
+    char alt_resp[] = "HTTP/1.1 404 Not Found\r\n";
+    server.send_file(alt_resp, 24, socket);
+    delete receiveStruct.buffer;
+    server.close_connection(socket);
+    return;
+
+  }
+  
   route_struct_t routeStruct;
 
-  routeStruct = func(this, 5);
-  
+  routeStruct = func(this, 5); 
   server.send_file(routeStruct.buffer, routeStruct.buffer_size, socket);
   server.close_connection(socket);
   delete routeStruct.buffer;

@@ -1,7 +1,12 @@
 #include "includes/potion.hpp"
 
-void make_routes(Potion* app) {
+route_struct_t handle_file(PotionApp* app, int num) {
   
-  app->add("hello");
+  return render("file.html");
+}
 
+void make_routes(PotionApp* app) {
+  
+  app->set_get("/file", &handle_file);
+  
 }

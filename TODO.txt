@@ -1,3 +1,4 @@
+DEAL WITH SEG FAULT because of not found routes
 1.Complete templating engine, send js files
 2.Figure out whats wrong with request parser
 

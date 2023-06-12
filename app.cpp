@@ -1,5 +1,7 @@
 #include "includes/potion.hpp"
 
+#include "fl.hpp"
+
 route_struct_t handle_get_home(PotionApp* app, int num) {
   
   return render("index.html");
@@ -17,6 +19,9 @@ int main () {
   
   app.set_get("/", &handle_get_home);
   app.set_get("/string", &handle_get_string);
+  
+
+  make_routes(&app);
 
   app.run();
   
