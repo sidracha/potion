@@ -5,6 +5,9 @@
 
 #define KB 1024
 
+
+
+
 PotionApp::PotionApp(int port) : server(port) {
 
 }
@@ -51,14 +54,19 @@ void PotionApp::handle_request(int socket) {
   }
 
   Request request(receiveStruct);
-  std::string method = request.get_method();
+  //std::string method = request.get_method();
+  request.parse_headers();
+  //std::string method = request.get_method();
+  //std::string route = request.get_route();
 
+
+    
   route_handler_func_t* func = route_map["/"]["GET"];
   func(this, 5);
   
 
 
   server.send(http_response, socket);
-  
+  server.close_connection(socket);  
   delete receiveStruct.buffer;
 }

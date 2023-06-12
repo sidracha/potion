@@ -12,6 +12,10 @@
 
 TCPServer::TCPServer(int port) : portno(port){
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  
+  int reuse = 1;
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
+
   if (sockfd < 0) {
     error("ERROR opening socket");
   }
@@ -19,11 +23,11 @@ TCPServer::TCPServer(int port) : portno(port){
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(portno);
-
+  
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
     error("ERROR on binding");
   }
-
+  
   listen(sockfd, 5);
 }
 
@@ -84,10 +88,30 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
 }
 
 void TCPServer::send(const std::string& message, int socket) {
-  int n = write(socket, message.c_str(), message.length());
+
+  //char* message2 = "HTTP/1.1 404 Not Found";
+  //std::vector<std::byte>* buffer = reinterpret_cast<std::vector<std::byte> *> (&message);
+  //std::cout << sizeof(message2) << std::endl;
+  //char buf[16] = "HTTP/1.1 200 OK";
+  std::string buf = "HTTP/1.1 200 OK";
+  std::string* bufp = &buf;
+  std::cout << sizeof(bufp) << std::endl;
+  int n = write(socket, buf.c_str(), buf.length());
+  
+
   if (n < 0) {
     error("ERROR writing to socket");
   } 
+}
+
+void TCPServer::send_file(char* buffer, size_t size, int socket) {
+
+  for (int i = 0; i < size; i++) {
+    std::cout << buffer[i];
+  }
+   
+  int n = write(socket, buffer, size);
+
 }
 
 void TCPServer::close_connection(int socket) {

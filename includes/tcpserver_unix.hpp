@@ -31,7 +31,9 @@ class TCPServer {
     receive_struct_t receive(int timeout_val, int socket, size_t read_size); //timeout val in seconds
     void send(const std::string& message, int socket);
     void close_connection(int socket);
-  
+    
+    void send_file(char* buffer, size_t size, int socket);
+
   private:
     void error(const char *msg);
 };
