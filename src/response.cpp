@@ -70,7 +70,7 @@ route_struct_t render(std::string file_path) {
 }
 
 
-char* send_status_code(uint8_t status_code) {
+route_struct_t send_status_code(uint16_t status_code) {
   
   //for now only 404 and 405 supported add later
   //add enum class later
@@ -78,26 +78,32 @@ char* send_status_code(uint8_t status_code) {
   std::string status_404 = "HTTP/1.1 404 Not Found\r\n";
   std::string status_405 = "HTTP/1.1 405 Method Not Allowed\r\n";
   
-
+  route_struct_t routeStruct;
   switch (status_code) {
       
     case 404: {
               
       char* buffer = new char[status_404.length()];
       string_to_char(status_404, buffer);
-      return buffer;
+      routeStruct.buffer = buffer;
+      routeStruct.buffer_size = status_404.length();
+      break;
     }
     case 405: {
               
       char* buffer = new char[status_405.length()];
       string_to_char(status_405, buffer);
-      return buffer;
+      routeStruct.buffer = buffer;
+      routeStruct.buffer_size = status_405.length();
+      break;
     }
     
     default: {
       error("Invlalid status code return");
     }
   }
+
+  return routeStruct;
 
 
 

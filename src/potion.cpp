@@ -77,7 +77,19 @@ void PotionApp::handle_request(int socket) {
   std::string route = request.get_route();
   
   std::cout << method << " " << route << std::endl;
-
+  
+  if (!route_map.count(route)) {
+    routeStruct = send_status_code(404);
+    server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
+    close_request(receiveStruct, routeStruct, socket);
+    return;
+  }
+  if (!route_map[route].count(method)) {
+    routeStruct = send_status_code(405);
+    server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
+    close_request(receiveStruct, routeStruct, socket);
+    return;
+  }
   route_handler_func_t* func = route_map[route][method];
   routeStruct = func(this, 5);
   

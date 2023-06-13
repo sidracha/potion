@@ -1,2 +1,6 @@
 1.Complete templating engine, send js files - implement through connection keep alive
 2.Finish header parser
+
+side:
+
+error checkoing for valid routes

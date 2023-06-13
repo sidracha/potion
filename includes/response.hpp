@@ -14,4 +14,6 @@ route_struct_t render(std::string file_path);
 
 char* string_to_char(std::string str);
 
+route_struct_t send_status_code(uint16_t status_code);
+
 #endif
