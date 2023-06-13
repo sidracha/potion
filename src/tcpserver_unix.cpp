@@ -87,31 +87,24 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
     
 }
 
-void TCPServer::send(const std::string& message, int socket) {
 
-  //char* message2 = "HTTP/1.1 404 Not Found";
-  //std::vector<std::byte>* buffer = reinterpret_cast<std::vector<std::byte> *> (&message);
-  //std::cout << sizeof(message2) << std::endl;
-  //char buf[16] = "HTTP/1.1 200 OK";
-  std::string buf = "HTTP/1.1 200 OK";
-  std::string* bufp = &buf;
-  std::cout << sizeof(bufp) << std::endl;
-  int n = write(socket, buf.c_str(), buf.length());
-  
+void TCPServer::send(char* buffer, size_t size, int socket) {
 
-  if (n < 0) {
-    error("ERROR writing to socket");
-  } 
-}
-
-void TCPServer::send_file(char* buffer, size_t size, int socket) {
-
-  for (int i = 0; i < size; i++) {
-    std::cout << buffer[i];
-  }
    
   int n = write(socket, buffer, size);
 
+  if (n < 0) { //need to change 
+    error("ERROR writing to socket");
+  }
+
+}
+
+void TCPServer::send_str(const std::string& msg, int socket) {
+  int n = write(socket, msg.c_str(), msg.length());
+
+  if (n < 0) {
+    error("ERROR writing to socket");
+  }
 }
 
 void TCPServer::close_connection(int socket) {
@@ -123,6 +116,5 @@ void TCPServer::error(const char *msg) {
   perror(msg);
     exit(1);
 }
-
 
 

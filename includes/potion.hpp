@@ -21,7 +21,7 @@ class PotionApp {
     std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map;
     TCPServer server; 
     
-
+    void close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket);
   public:
     
     PotionApp(int port);

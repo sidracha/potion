@@ -2,9 +2,24 @@
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/potion.hpp"
 #include "../includes/request.hpp"
+#include "../includes/response.hpp"
 
 #define KB 1024
 
+void PotionApp::close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket) {
+  server.close_connection(socket);
+  
+  if (routeStruct.buffer == NULL) {
+  }
+
+  if (receiveStruct.buffer != NULL) {
+    delete receiveStruct.buffer;
+  }
+
+  if (routeStruct.buffer != NULL) {
+    delete routeStruct.buffer;
+  }
+}
 
 
 
@@ -13,7 +28,6 @@ PotionApp::PotionApp(int port) : server(port) {
 }
 
 void PotionApp::print_num(int num) {
-  std::cout << num << std::endl;
 }
 
 void PotionApp::run () {
@@ -43,13 +57,16 @@ void PotionApp::handle_request(int socket) {
       html_body + "\n"; 
   
 
-  receive_struct_t receiveStruct = server.receive(60, socket, 2*KB);
+  receive_struct_t receiveStruct = server.receive(10, socket, 2*KB);
   
+
+
+  route_struct_t routeStruct;
+
   if (receiveStruct.bytes_read == 0) {
     http_response = "HTTP/1.1 504 Gateway Timeout";
-    server.send(http_response, socket);
-    server.close_connection(socket);
-    delete receiveStruct.buffer;
+    server.send_str(http_response, socket);
+    close_request(receiveStruct, routeStruct, socket);
     return;
   }
 
@@ -59,29 +76,12 @@ void PotionApp::handle_request(int socket) {
   std::string method = request.get_method();
   std::string route = request.get_route();
   
+  std::cout << method << " " << route << std::endl;
 
-  //method = method.substr(1, method.length()-1);
-  route = route.substr(0, route.length()-1);
-
-  std::cout << route << std::endl;  
-  route_handler_func_t* func;
-  try {
-    func = route_map[route][method];
-  } catch (const std::exception& e) {
-    std::cout << route << " " << method << " 404 or 405\n";
-    char alt_resp[] = "HTTP/1.1 404 Not Found\r\n";
-    server.send_file(alt_resp, 24, socket);
-    delete receiveStruct.buffer;
-    server.close_connection(socket);
-    return;
-
-  }
+  route_handler_func_t* func = route_map[route][method];
+  routeStruct = func(this, 5);
   
-  route_struct_t routeStruct;
-
-  routeStruct = func(this, 5); 
-  server.send_file(routeStruct.buffer, routeStruct.buffer_size, socket);
-  server.close_connection(socket);
-  delete routeStruct.buffer;
-  delete receiveStruct.buffer;
+  server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
+    
+  close_request(receiveStruct, routeStruct, socket);
 }

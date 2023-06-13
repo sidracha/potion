@@ -6,6 +6,17 @@
 
 namespace fs = std::filesystem;
 
+static inline char* string_to_char(std::string str, char* buffer) {
+   
+  str.copy(buffer, str.length());
+  return buffer;
+}
+
+static inline void error(std::string msg) {
+  throw std::runtime_error(msg);
+}
+
+
 route_struct_t send_string(std::string str) {
   
   std::string headers = 
@@ -30,7 +41,6 @@ route_struct_t send_string(std::string str) {
 }
 
 route_struct_t render(std::string file_path) {
-  std::cout << "hello\n"; 
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
@@ -57,4 +67,38 @@ route_struct_t render(std::string file_path) {
   routeStruct.buffer = buffer;
   routeStruct.buffer_size = buffer_size;
   return routeStruct;
+}
+
+
+char* send_status_code(uint8_t status_code) {
+  
+  //for now only 404 and 405 supported add later
+  //add enum class later
+  
+  std::string status_404 = "HTTP/1.1 404 Not Found\r\n";
+  std::string status_405 = "HTTP/1.1 405 Method Not Allowed\r\n";
+  
+
+  switch (status_code) {
+      
+    case 404: {
+              
+      char* buffer = new char[status_404.length()];
+      string_to_char(status_404, buffer);
+      return buffer;
+    }
+    case 405: {
+              
+      char* buffer = new char[status_405.length()];
+      string_to_char(status_405, buffer);
+      return buffer;
+    }
+    
+    default: {
+      error("Invlalid status code return");
+    }
+  }
+
+
+
 }

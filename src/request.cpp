@@ -25,8 +25,17 @@ void Request::parse_headers() {
       route += character;
     }
 
-    if (line == 0 && character == ' ' && request_str != "") {
+    if (character == '\n') {
+      line++;
+      continue;
+    }
 
+    if (line == 0 && character == ' ') {
+      if (!found_method && method == "") {
+        //continue;
+      }
+
+      
       if (!found_method) {
         header_map["method"] = request_str.substr(0, request_str.length()-1);
         found_method = true;
@@ -34,15 +43,16 @@ void Request::parse_headers() {
       }
       else {
         on_route = false;
-        header_map["route"] = route;
+        header_map["route"] = route.substr(0, route.length()-1);
       }
     }
       
       
   }
-  std::cout << method << std::endl;
-  std::cout << route << std::endl;
-
+  bool print_req = true;
+  if (print_req) {
+    std::cout << request_str << std::endl;
+  }
 
 }
 
