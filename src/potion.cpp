@@ -9,9 +9,6 @@
 void PotionApp::close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket) {
   server.close_connection(socket);
   
-  if (routeStruct.buffer == NULL) {
-  }
-
   if (receiveStruct.buffer != NULL) {
     delete receiveStruct.buffer;
   }
@@ -33,7 +30,7 @@ void PotionApp::print_num(int num) {
 void PotionApp::run () {
   
   ThreadPool threadPool;
-  threadPool.start_threads(10, this);
+  threadPool.start_threads(2, this);
   
   while (1) { //entire loop of app
     
@@ -66,7 +63,9 @@ void PotionApp::handle_request(int socket) {
   if (receiveStruct.bytes_read == 0) {
     http_response = "HTTP/1.1 504 Gateway Timeout";
     server.send_str(http_response, socket);
-    close_request(receiveStruct, routeStruct, socket);
+    //close_request(receiveStruct, routeStruct, socket);
+    delete receiveStruct.buffer;
+    server.close_connection(socket);
     return;
   }
 
