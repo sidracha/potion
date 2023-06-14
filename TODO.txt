@@ -1,3 +1,6 @@
+ ***FIX PROBLEM WITH BYTE READING******
+
+
 1.Complete templating engine, send js files - implement through connection keep alive
 2.Finish header parser
 

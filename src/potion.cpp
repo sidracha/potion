@@ -54,8 +54,8 @@ void PotionApp::handle_request(int socket) {
       html_body + "\n"; 
   
 
-  receive_struct_t receiveStruct = server.receive(10, socket, 2*KB);
-  
+  receive_struct_t receiveStruct = server.receive(10, socket, 79);
+  std::cout << receiveStruct.bytes_read << std::endl;
 
 
   route_struct_t routeStruct;
