@@ -71,7 +71,7 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
     if (n < 0) {
       error("ERROR reading from socket");
     }
-    (*buffer).resize((*buffer).size() + n - read_size);
+    (*buffer).resize((*buffer).size() + read_size);
 
     if (static_cast<size_t>(n) < read_size) {
       break;

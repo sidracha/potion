@@ -4,7 +4,7 @@ import time
 
 port = 8080
 
-lchost = "http://127.0.0.1:" + str(port)
+lchost = "http://127.0.0.1:" + str(port) + "/string"
 
 obj = {"hello": 1, "byte": 3}
 
@@ -21,7 +21,7 @@ def send_request():
 def create_threads():
     threads = []
 
-    for _ in range(0, 1000):
+    for _ in range(0, 50):
         thread = threading.Thread(target=send_request)
         thread.start()
         threads.append(thread)

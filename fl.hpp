@@ -2,7 +2,7 @@
 
 route_struct_t handle_file(PotionApp* app, int num) {
   
-  return render("file.html");
+  return render(app, "file.html");
 }
 
 void make_routes(PotionApp* app) {

@@ -54,8 +54,7 @@ void PotionApp::handle_request(int socket) {
       html_body + "\n"; 
   
 
-  receive_struct_t receiveStruct = server.receive(10, socket, 79);
-  std::cout << receiveStruct.bytes_read << std::endl;
+  receive_struct_t receiveStruct = server.receive(10, socket, 2*KB);
 
 
   route_struct_t routeStruct;
@@ -78,13 +77,13 @@ void PotionApp::handle_request(int socket) {
   std::cout << method << " " << route << std::endl;
   
   if (!route_map.count(route)) {
-    routeStruct = send_status_code(404);
+    routeStruct = send_status_code(this, 404);
     server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
     close_request(receiveStruct, routeStruct, socket);
     return;
   }
   if (!route_map[route].count(method)) {
-    routeStruct = send_status_code(405);
+    routeStruct = send_status_code(this, 405);
     server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
     close_request(receiveStruct, routeStruct, socket);
     return;

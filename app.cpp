@@ -4,12 +4,12 @@
 
 route_struct_t handle_get_home(PotionApp* app, int num) {
   
-  return render("index.html");
+  return render(app, "index.html");
 
 }
 
 route_struct_t handle_get_string(PotionApp* app, int num) {
-  return send_string("<h1>Hello, World!<h1>");
+  return send_string(app, "<h1>Hello, World!<h1>");
 }
 
 

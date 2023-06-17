@@ -17,7 +17,7 @@ static inline void error(std::string msg) {
 }
 
 
-route_struct_t send_string(std::string str) {
+route_struct_t send_string(PotionApp* app, std::string str) {
   
   std::string headers = 
     "HTTP/1.1 200 OK\r\n"
@@ -40,7 +40,7 @@ route_struct_t send_string(std::string str) {
 
 }
 
-route_struct_t render(std::string file_path) {
+route_struct_t render(PotionApp* app, std::string file_path) {
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
@@ -70,7 +70,7 @@ route_struct_t render(std::string file_path) {
 }
 
 
-route_struct_t send_status_code(uint16_t status_code) {
+route_struct_t send_status_code(PotionApp* app, uint16_t status_code) {
   
   //for now only 404 and 405 supported add later
   //add enum class later
@@ -108,3 +108,6 @@ route_struct_t send_status_code(uint16_t status_code) {
 
 
 }
+
+//route_struct_t send_js_file(PotionApp* app, std::string file_path) {
+//}
