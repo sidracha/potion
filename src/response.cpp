@@ -49,6 +49,7 @@ route_struct_t render(PotionApp* app, std::string file_path) {
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: text/html\r\n"
     "Content-Length: " + std::to_string(f_size) + "\r\n"
+    "Accept-Ranges: bytes\r\n"
     "\r\n";
   
   size_t header_len = headers.length();
@@ -118,6 +119,7 @@ route_struct_t send_file(PotionApp* app, std::string file_path) {
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: video/mp4\r\n"
     "Content-Length: " + std::to_string(f_size) + "\r\n"
+    "Accept-Ranges: bytes\r\n"
     "\r\n";
 
 

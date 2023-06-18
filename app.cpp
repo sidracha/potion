@@ -23,14 +23,17 @@ route_struct_t handle_get_img(PotionApp* app, int num) {
 } 
 
 route_struct_t handle_get_video(PotionApp*app, int num) {
-  
-  return send_file(app, "testvid.mp4");
+  std::cout << fs::file_size("testvid.mp4") << std::endl; 
+  return send_file(app, "crashothy.mp4");
 }
 
 
 int main () {
   
   PotionApp app(8080);
+
+
+  app.config("static_folder") = "/hello";
   
   app.set_get("/", &handle_get_home);
   app.set_get("/string", &handle_get_string);
