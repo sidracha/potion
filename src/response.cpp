@@ -105,9 +105,39 @@ route_struct_t send_status_code(PotionApp* app, uint16_t status_code) {
 
   return routeStruct;
 
-
-
 }
+
+route_struct_t send_file(PotionApp* app, std::string file_path) {
+  
+
+  fs::path path = file_path;
+  fs::path p = fs::current_path() / path;
+  size_t f_size = fs::file_size(p);
+
+  std::string http_response = 
+    "HTTP/1.1 200 OK\r\n"
+    "Content-Type: video/mp4\r\n"
+    "Content-Length: " + std::to_string(f_size) + "\r\n"
+    "\r\n";
+
+
+  size_t header_len = http_response.length();
+  size_t buffer_size = header_len + f_size;
+  char* buffer = new char[buffer_size];
+  
+  for (int i = 0; i < header_len; i++) {
+    buffer[i] = http_response[i];
+  }
+  std::ifstream file(p);
+
+  file.read(buffer + header_len, f_size);
+  route_struct_t routeStruct;
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = buffer_size;
+  return routeStruct;
+  
+}
+
 
 //route_struct_t send_js_file(PotionApp* app, std::string file_path) {
 //}
