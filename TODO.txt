@@ -1,4 +1,6 @@
 
+DEAL WITH BYTE RANGE ISSUES FOR MEDIA
+
 BUILD HEADERSBUILD HEADERS  
 
 1.Complete templating engine, send js files - implement through connection keep alive
