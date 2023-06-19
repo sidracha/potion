@@ -33,7 +33,6 @@ int main () {
   PotionApp app(8080);
 
 
-  app.config("static_folder") = "/hello";
   
   app.set_get("/", &handle_get_home);
   app.set_get("/string", &handle_get_string);
