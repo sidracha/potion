@@ -35,6 +35,7 @@ void PotionApp::run () {
   while (1) { //entire loop of app
     
     int socket = server.accept_connection();
+    std::cout << "connection made\n";
     threadPool.add_job(socket);
 
   }
@@ -42,7 +43,8 @@ void PotionApp::run () {
 }
 
 
-void PotionApp::handle_request(int socket) {
+
+void PotionApp::handle_connection(int socket) {
   
     std::string html_body = "<html><body><h1>Hello, World!</h1></body></html>";
 
@@ -79,7 +81,7 @@ void PotionApp::handle_request(int socket) {
   std::string route = request.get_route();
   std::string method = request.get_method();
 
-  
+  std::cout << method << " " << route << std::endl; 
    
 
   if (!route_map.count(route)) {
@@ -98,6 +100,10 @@ void PotionApp::handle_request(int socket) {
   routeStruct = func(this, &request, &response);
   
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
+
+  if (request.get_header_value("Connection") == "keep-alive") {
+    handle_connection(socket); 
+  }
     
   close_request(receiveStruct, routeStruct, socket);
 }

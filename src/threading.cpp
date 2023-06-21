@@ -45,7 +45,7 @@ void ThreadPool::worker(PotionApp* app) {
      
     int socket = b_queue.pop();
 
-    app->handle_request(socket); //here the entire request needs to be handled and send back. This function takes the request as a string as well as the newsockfd in order to write to the socket
+    app->handle_connection(socket); //here the entire request needs to be handled and send back. This function takes the request as a string as well as the newsockfd in order to write to the socket
                           //when this function ends, the program has sent back something based on the handler function etc
                           //this function is called after a connection has been accepted, it hands off the connection to a thread from the pool. The thread is "joined back" into the pool
                           //as it searches for more jobs to take on

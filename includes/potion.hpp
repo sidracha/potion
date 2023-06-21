@@ -28,7 +28,7 @@ class PotionApp {
 
     void run();
     void print_num(int num);
-    void handle_request(int socket);
+    void handle_connection(int socket);
 
     void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;} 
 
