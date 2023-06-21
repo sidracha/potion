@@ -69,27 +69,55 @@ void PotionApp::handle_request(int socket) {
   }
 
   Request request(receiveStruct);
-  request.parse_headers();
+  std::map<std::string, std::string> header = request.parse_headers_test();
   
-  std::string method = request.get_method();
-  std::string route = request.get_route();
+  Response response(&request);
+
+  //std::string method = request.get_method();
+  //std::string route = request.get_route();
   
-  std::cout << method << " " << route << std::endl;
+  //std::cout << "m: " << method << " " << "r: " << route << std::endl;
+  //std::cout << request.get_header_value("Accept") << std::endl;
+    
+  //std::cout << request.header_map["Host"] << std::endl;
+  //std::cout << request.header_map["routggege"] << std::endl;
+
+  //std::cout << "> " << request.header_map["Accept"] << std::endl;
+  //request.header_map["Accept"];
+  // char* str = static_cast<char*>(request.header_map["Accept"]);
+  // std::string s = request.header_map["Accept"];
   
+  
+  for (const auto &[k, v] : header) {
+    std::cout << k << std::endl;
+  }
+  
+  
+  //std::string temp = request.get_header_value("Accept");
+  //std::cout << temp << std::endl;
+  std::string route = "";
+  std::string method = "";
+
+  std::cout << header["Accept"] << std::endl;
+  
+  if ("Accept" == "Accept") {
+    std::cout << "passed\n";
+  }
+
   if (!route_map.count(route)) {
-    routeStruct = send_status_code(this, 404);
+    routeStruct = response.send_status_code(this, 404);
     server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
     close_request(receiveStruct, routeStruct, socket);
     return;
   }
   if (!route_map[route].count(method)) {
-    routeStruct = send_status_code(this, 405);
+    routeStruct = response.send_status_code(this, 405);
     server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
     close_request(receiveStruct, routeStruct, socket);
     return;
   }
   route_handler_func_t* func = route_map[route][method];
-  routeStruct = func(this, 5);
+  routeStruct = func(this, &request, &response);
   
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
     

@@ -6,25 +6,24 @@
 
 namespace fs = std::filesystem;
 
-route_struct_t handle_get_home(PotionApp* app, int num) {
+route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
   
-  return render(app, "index.html");
+  return response->render(app, "index.html");
 
 }
 
-route_struct_t handle_get_string(PotionApp* app, int num) {
-  return send_string(app, "<h1>Hello, World!<h1>");
+route_struct_t handle_get_string(PotionApp* app, Request* request, Response* response) {
+  return response->send_string(app, "<h1>Hello, World!<h1>");
 }
 
-route_struct_t handle_get_img(PotionApp* app, int num) {
+route_struct_t handle_get_img(PotionApp* app, Request* request, Response* response) {
   
-  return send_file(app, "catimg.jpeg");
+  return response->send_file(app, "catimg.jpeg");
 
 } 
 
-route_struct_t handle_get_video(PotionApp*app, int num) {
-  std::cout << fs::file_size("testvid.mp4") << std::endl; 
-  return send_file(app, "crashothy.mp4");
+route_struct_t handle_get_video(PotionApp*app, Request* request, Response* response) {
+  return response->send_file(app, "crashothy.mp4");
 }
 
 

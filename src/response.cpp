@@ -3,21 +3,27 @@
 #include <iostream>
 
 #include "../includes/response.hpp"
+#include "../includes/request.hpp"
 
 namespace fs = std::filesystem;
 
-static inline char* string_to_char(std::string str, char* buffer) {
+
+Response::Response(Request* r) : request(r) {
+
+}
+
+inline char* Response::string_to_char(std::string str, char* buffer) {
    
   str.copy(buffer, str.length());
   return buffer;
 }
 
-static inline void error(std::string msg) {
+inline void Response::error(std::string msg) {
   throw std::runtime_error(msg);
 }
 
 
-route_struct_t send_string(PotionApp* app, std::string str) {
+route_struct_t Response::send_string(PotionApp* app, std::string str) {
   
   std::string headers = 
     "HTTP/1.1 200 OK\r\n"
@@ -40,7 +46,7 @@ route_struct_t send_string(PotionApp* app, std::string str) {
 
 }
 
-route_struct_t render(PotionApp* app, std::string file_path) {
+route_struct_t Response::render(PotionApp* app, std::string file_path) {
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
@@ -71,7 +77,7 @@ route_struct_t render(PotionApp* app, std::string file_path) {
 }
 
 
-route_struct_t send_status_code(PotionApp* app, uint16_t status_code) {
+route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) {
   
   //for now only 404 and 405 supported add later
   //add enum class later
@@ -108,7 +114,7 @@ route_struct_t send_status_code(PotionApp* app, uint16_t status_code) {
 
 }
 
-route_struct_t send_file(PotionApp* app, std::string file_path) {
+route_struct_t Response::send_file(PotionApp* app, std::string file_path) {
   
 
   fs::path path = file_path;

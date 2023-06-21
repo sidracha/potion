@@ -10,11 +10,11 @@
 
 #include "tcpserver_unix.hpp"
 #include "response.hpp"
-
+#include "request.hpp"
 
 class PotionApp {
   
-  using route_handler_func_t = route_struct_t (PotionApp* app, int num);
+  using route_handler_func_t = route_struct_t (PotionApp* app, Request* request, Response* response);
   
   private:
     
