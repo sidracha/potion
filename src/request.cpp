@@ -1,9 +1,12 @@
 #include <map>
 #include <iostream>
 #include <bitset>
+#include <algorithm>
+
 
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/request.hpp"
+
 
 /*
 void Request::parse_headers() {
@@ -84,15 +87,17 @@ void Request::parse_headers() {
 }
 */
 
-std::map<std::string, std::string> Request::parse_headers_test() {
+void Request::parse_headers() {
 
   std::string line = "";
   std::vector<std::string> lines;
-  std::map<std::string, std::string> header;
-  
+  std::string request_body = "";
+
+
   char character;
   for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
     character = static_cast<char>((*receiveStruct.buffer)[i]);
+    request_body += character;
     if (character == '\r') {
       lines.push_back(line);
       line = "";
@@ -125,8 +130,16 @@ std::map<std::string, std::string> Request::parse_headers_test() {
 
     if (c == ' ' && found_method) {
       route = w.substr(0, w.length()-1);
-      header["method"] = method;
-      header["route"] = route;
+      header_map["method"] = method;
+      header_map["route"] = route;
+      //test_struct ts;
+      //ts.key = "method";
+      //ts.value = method;
+      //test_vect.push_back(std::move(ts));
+      //test_struct ts2;
+      //ts2.key = "route";
+      //ts2.value = route;
+      //test_vect.push_back(std::move(ts2));
       break;
     }
 
@@ -145,24 +158,28 @@ std::map<std::string, std::string> Request::parse_headers_test() {
 
       word += lines[i][j];
       if (lines[i][j] == ':' && !key_found) {
-        key = word.substr(0, word.length()-1);
+        key = word.substr(1, word.length()-2);
         word = "";
         key_found = true;
         continue;
       } 
       if (j == lines[i].length()-1) {
-        if (word == "") {break;}
+        if (word == "\r" || word == "\r\n" || word == "\n" || key == "\r" || key == "") {break;}
         word2 = word.substr(1, word.length()-1);
-        header[key] = word2;
+        header_map[key] = word2;
         //std::cout << key << header_map[key] << std::endl;
-        
+        //test_struct ts3;
+        //ts3.key = key;
+        //ts3.value = word2;
+        //test_vect.push_back(std::move(ts3));
         
       }
     }
 
   
   }
-  return header;
+
+  std::cout << request_body << std::endl;
 
 }
 
@@ -178,3 +195,4 @@ std::string Request::get_method () { //returns first word of request
 std::string Request::get_route () {
   return header_map["route"];
 }
+

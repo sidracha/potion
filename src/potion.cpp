@@ -69,40 +69,18 @@ void PotionApp::handle_request(int socket) {
   }
 
   Request request(receiveStruct);
-  std::map<std::string, std::string> header = request.parse_headers_test();
+  request.parse_headers();
   
   Response response(&request);
 
-  //std::string method = request.get_method();
-  //std::string route = request.get_route();
   
-  //std::cout << "m: " << method << " " << "r: " << route << std::endl;
-  //std::cout << request.get_header_value("Accept") << std::endl;
-    
-  //std::cout << request.header_map["Host"] << std::endl;
-  //std::cout << request.header_map["routggege"] << std::endl;
 
-  //std::cout << "> " << request.header_map["Accept"] << std::endl;
-  //request.header_map["Accept"];
-  // char* str = static_cast<char*>(request.header_map["Accept"]);
-  // std::string s = request.header_map["Accept"];
   
-  
-  for (const auto &[k, v] : header) {
-    std::cout << k << std::endl;
-  }
-  
-  
-  //std::string temp = request.get_header_value("Accept");
-  //std::cout << temp << std::endl;
-  std::string route = "";
-  std::string method = "";
+  std::string route = request.get_route();
+  std::string method = request.get_method();
 
-  std::cout << header["Accept"] << std::endl;
   
-  if ("Accept" == "Accept") {
-    std::cout << "passed\n";
-  }
+   
 
   if (!route_map.count(route)) {
     routeStruct = response.send_status_code(this, 404);
