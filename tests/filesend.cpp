@@ -1,8 +1,8 @@
-#include "../includes/tcpserver_unix.hpp"
 #include <filesystem>
 #include <cstddef>
 #include <fstream>
 
+#include "../includes/tcpserver_unix.hpp"
 
 namespace fs = std::filesystem;
 
@@ -11,8 +11,13 @@ int main () {
 
   fs::path path = "catimg.jpeg";
   fs::path p = fs::current_path() / path;
+  std::cout << p << std::endl;
+  std::cout << fs::current_path() << std::endl;
 
-  size_t f_size = fs::file_size(p);
+  return 0;
+
+
+  size_t f_size = fs::file_size(path);
   std::cout << f_size << std::endl;
   
   //std::string html_body = "<html><body><h1>Hello, World!</h1></body></html>";
@@ -30,7 +35,7 @@ int main () {
     buffer[i] = http_response[i];
   }
 
-  std::ifstream file(p);
+  std::ifstream file(path);
 
   file.read(buffer + resp_len, f_size);
 
@@ -42,9 +47,9 @@ int main () {
     //std::cout << static_cast<char>((*receiveStruct.buffer)[i]);
   //}
 
-  server.send_file(buffer, buffer_size, socket);
+  //server.send_file(buffer, buffer_size, socket);
 
-
+  
 
 
   return 0;

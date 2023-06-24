@@ -15,8 +15,10 @@
 class PotionApp {
   
   using route_handler_func_t = route_struct_t (PotionApp* app, Request* request, Response* response);
+  //using config_t = std::variant<std::string, int>;
   
   private:
+
     
     std::map<std::string, std::map<std::string, route_handler_func_t*> > route_map;
     TCPServer server; 
@@ -30,7 +32,9 @@ class PotionApp {
     void print_num(int num);
     void handle_connection(int socket);
 
-    void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;} 
+    void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;}
+
+
 
 };
 
@@ -61,6 +65,7 @@ class ThreadPool {
   private:
     std::vector<std::thread> threads;
     BlockingQueue<int> b_queue;
+
 
   public:
 

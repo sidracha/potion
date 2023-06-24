@@ -1,4 +1,11 @@
 
+#include <unistd.h>
+#include <limits.h>
+#include <filesystem>
+#include <string>
+#include <fstream>
+#include <cstddef>
+
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/potion.hpp"
 #include "../includes/request.hpp"
@@ -6,28 +13,66 @@
 
 #define KB 1024
 
+namespace fs = std::filesystem;
+
 void PotionApp::close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket) {
   server.close_connection(socket);
   
-  if (receiveStruct.buffer != NULL) {
+  if (receiveStruct.buffer != nullptr) {
     delete receiveStruct.buffer;
   }
 
-  if (routeStruct.buffer != NULL) {
+  if (routeStruct.buffer != nullptr) {
     delete routeStruct.buffer;
   }
 }
 
-
+static int last_index_of(std::string str, char character) {
+  
+  for (int i = str.length()-1; i > -1; i--) {
+    //std::cout << i << " " << str[i] << std::endl;
+    if (str[i] == character) {
+      return i;
+    }
+  }
+  return -1;
+  
+}
 
 PotionApp::PotionApp(int port) : server(port) {
 
 }
 
-void PotionApp::print_num(int num) {
+void test() {
+
+  fs::path current_file = fs::absolute(__FILE__);
+  std::cout << current_file << std::endl;
+  
+  fs::path templates_folder = "../frontend/templates";
+  fs::path path = current_file / templates_folder;
+  std::string str = path.string();
+  std::cout << str << std::endl;
+  
+  int i = last_index_of(str, '/');
+
+  std::cout << i << std::endl;
+  return;
+  std::cout << path << std::endl;
+
+  size_t fsize = fs::file_size(path);
+  char buffer[fsize];
+  std::ifstream file(path);
+  file.read(buffer, fsize);
+
+
+
 }
 
+
 void PotionApp::run () {
+
+  test();
+  return;
   
   ThreadPool threadPool;
   threadPool.start_threads(2, this);
