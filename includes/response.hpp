@@ -28,7 +28,7 @@ class Response {
     route_struct_t send_string(PotionApp* app, std::string str);
     route_struct_t render(PotionApp* app, std::string file_path);
     route_struct_t send_status_code(PotionApp* app, uint16_t status_code);
-    route_struct_t send_file(PotionApp* app, std::string file_path);
+    route_struct_t send_file(PotionApp* app, std::string file_path, std::string content_type);
 
     route_struct_t send_js_file(PotionApp* app, std::string file_path);
   

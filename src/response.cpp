@@ -77,6 +77,7 @@ route_struct_t Response::render(PotionApp* app, std::string file_path) {
 }
 
 
+
 route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) {
   
   //for now only 404 and 405 supported add later
@@ -114,7 +115,7 @@ route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) 
 
 }
 
-route_struct_t Response::send_file(PotionApp* app, std::string file_path) {
+route_struct_t Response::send_file(PotionApp* app, std::string file_path, std::string content_type) {
   
 
   fs::path path = file_path;
@@ -122,16 +123,16 @@ route_struct_t Response::send_file(PotionApp* app, std::string file_path) {
   size_t f_size = fs::file_size(p);
 
   std::string http_response = 
-    "HTTP/1.1 206 Partial Content\r\n"
-    "Content-Type: video/mp4\r\n"
-    "Content-Length: " + std::to_string(100) + "\r\n"
+    "HTTP/1.1 200 OK\r\n"
+    "Content-Type: " + content_type + "\r\n"
+    "Content-Length: " + std::to_string(f_size) + "\r\n"
     "Accept-Ranges: bytes\r\n"
     "\r\n";
 
 
   size_t header_len = http_response.length();
   //size_t buffer_size = header_len + f_size;
-  size_t buffer_size = 100 + header_len;
+  size_t buffer_size = f_size + header_len;
   char* buffer = new char[buffer_size];
   
   for (size_t i = 0; i < header_len; i++) {
@@ -139,7 +140,7 @@ route_struct_t Response::send_file(PotionApp* app, std::string file_path) {
   }
   std::ifstream file(p);
 
-  file.read(buffer + header_len, 100);
+  file.read(buffer + header_len, f_size);
   route_struct_t routeStruct;
   routeStruct.buffer = buffer;
   routeStruct.buffer_size = buffer_size;

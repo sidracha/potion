@@ -179,7 +179,7 @@ void Request::parse_headers() {
   
   }
 
-  //std::cout << request_body << std::endl;
+  std::cout << request_body << std::endl;
 
 }
 

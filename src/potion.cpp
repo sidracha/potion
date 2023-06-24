@@ -71,8 +71,8 @@ void test() {
 
 void PotionApp::run () {
 
-  test();
-  return;
+  //test();
+  //return;
   
   ThreadPool threadPool;
   threadPool.start_threads(2, this);
@@ -127,25 +127,37 @@ void PotionApp::handle_connection(int socket) {
   std::string method = request.get_method();
 
   std::cout << method << " " << route << std::endl; 
-   
+  
 
   if (!route_map.count(route)) {
     routeStruct = response.send_status_code(this, 404);
-    server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
-    close_request(receiveStruct, routeStruct, socket);
-    return;
   }
-  if (!route_map[route].count(method)) {
+  
+  else if (!route_map[route].count(method)) {
     routeStruct = response.send_status_code(this, 405);
-    server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
-    close_request(receiveStruct, routeStruct, socket);
-    return;
   }
-  route_handler_func_t* func = route_map[route][method];
-  routeStruct = func(this, &request, &response);
+  else {
+    route_handler_func_t* func = route_map[route][method];
+    routeStruct = func(this, &request, &response);
+  }
+
+  
+  int lof = last_index_of(route, '.');
+  
+  if (lof > 0) {
+    
+    if (route.substr(lof, route.length()-lof) == ".js") {
+      try {
+
+        routeStruct = response.send_file(this, route.substr(1, route.length()), "application/javascript");
+      } catch (const std::exception& e) {
+        std::cout << "ERROR\n";
+        routeStruct = response.send_status_code(this, 404);
+      }
+    }
+  
+  } 
   
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
-
-    
   close_request(receiveStruct, routeStruct, socket);
 }
