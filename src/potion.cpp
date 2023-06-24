@@ -35,7 +35,7 @@ void PotionApp::run () {
   while (1) { //entire loop of app
     
     int socket = server.accept_connection();
-    std::cout << "connection made\n";
+    std::cout << socket << std::endl;
     threadPool.add_job(socket);
 
   }
@@ -56,7 +56,7 @@ void PotionApp::handle_connection(int socket) {
       html_body + "\n"; 
   
 
-  receive_struct_t receiveStruct = server.receive(10, socket, 2*KB);
+  receive_struct_t receiveStruct = server.receive(60, socket, 2*KB);
 
 
   route_struct_t routeStruct;
@@ -101,9 +101,6 @@ void PotionApp::handle_connection(int socket) {
   
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
 
-  if (request.get_header_value("Connection") == "keep-alive") {
-    handle_connection(socket); 
-  }
     
   close_request(receiveStruct, routeStruct, socket);
 }
