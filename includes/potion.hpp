@@ -32,7 +32,15 @@ class PotionApp {
     void print_num(int num);
     void handle_connection(int socket);
 
-    void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;}
+    inline void set_get(std::string route, route_handler_func_t* func) {route_map[route]["GET"] = func;}
+    inline void set_head(std::string route, route_handler_func_t* func) {route_map[route]["HEAD"] = func;}
+    inline void set_post(std::string route, route_handler_func_t* func) {route_map[route]["POST"] = func;}
+    inline void set_put(std::string route, route_handler_func_t* func) {route_map[route]["PUT"] = func;}
+    inline void set_delete(std::string route, route_handler_func_t* func) {route_map[route]["DELETE"] = func;}
+    inline void set_connect(std::string route, route_handler_func_t* func) {route_map[route]["CONNECT"] = func;}
+    inline void set_options(std::string route, route_handler_func_t* func) {route_map[route]["OPTIONS"] = func;}
+    inline void set_trace(std::string route, route_handler_func_t* func) {route_map[route]["TRACE"] = func;}
+    inline void set_patch(std::string route, route_handler_func_t* func) {route_map[route]["PATCH"] = func;}
 
 
 

@@ -80,7 +80,6 @@ void PotionApp::run () {
   while (1) { //entire loop of app
     
     int socket = server.accept_connection();
-    std::cout << socket << std::endl;
     threadPool.add_job(socket);
 
   }
@@ -126,7 +125,6 @@ void PotionApp::handle_connection(int socket) {
   std::string route = request.get_route();
   std::string method = request.get_method();
 
-  std::cout << method << " " << route << std::endl; 
   
 
   if (!route_map.count(route)) {
@@ -160,4 +158,7 @@ void PotionApp::handle_connection(int socket) {
   
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
   close_request(receiveStruct, routeStruct, socket);
+
+  std::string req_out = "<" + method + " " + route + ">";
+  std::cout << req_out << std::endl;
 }
