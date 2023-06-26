@@ -24,6 +24,8 @@ class Request {
     
     std::string get_route();
     std::string get_header_value(std::string key);
+
+    bool is_accessory_file_request(std::string route);
 };
 
 

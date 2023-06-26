@@ -39,6 +39,7 @@ class Response {
     route_struct_t send_file(PotionApp* app, std::string file_path, std::string content_type);
 
     route_struct_t send_js_file(PotionApp* app, std::string file_path);
+    route_struct_t serve_static_file(PotionApp* app, std::string file_path);
 
     void set_header(std::string key, std::string value);
 

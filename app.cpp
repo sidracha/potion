@@ -31,8 +31,9 @@ int main () {
   
   PotionApp app(8080);
 
+  app.config["READ_TIMEOUT"] = 60;
+  app.config["STATIC_FOLDER"] = "/tests";
 
-  
   app.set_get("/", &handle_get_home);
   app.set_get("/string", &handle_get_string);
   app.set_get("/image", &handle_get_img);

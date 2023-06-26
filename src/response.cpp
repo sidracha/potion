@@ -46,6 +46,16 @@ route_struct_t Response::send_string(PotionApp* app, std::string str) {
 
 }
 
+
+route_struct_t Response::serve_static_file(PotionApp* app, std::string file_path) {
+  
+  //std::string static_path = app.get_config("static_folder");
+  std::string static_path = "";
+  route_struct_t routeStruct;
+  return routeStruct;
+
+}
+
 route_struct_t Response::render(PotionApp* app, std::string file_path) {
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
@@ -72,7 +82,6 @@ route_struct_t Response::render(PotionApp* app, std::string file_path) {
   routeStruct.buffer_size = buffer_size;
   return routeStruct;
 }
-
 
 
 route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) {

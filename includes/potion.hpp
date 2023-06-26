@@ -15,7 +15,7 @@
 class PotionApp {
   
   using route_handler_func_t = route_struct_t (PotionApp* app, Request* request, Response* response);
-  //using config_t = std::variant<std::string, int>;
+  using config_t = std::variant<std::string, int>;
   
   private:
 
@@ -25,6 +25,8 @@ class PotionApp {
     
     void close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket);
   public:
+
+    std::map<std::string, config_t> config;
     
     PotionApp(int port);
 
@@ -43,7 +45,7 @@ class PotionApp {
     inline void set_patch(std::string route, route_handler_func_t* func) {route_map[route]["PATCH"] = func;}
 
 
-
+  
 };
 
 

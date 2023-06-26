@@ -27,22 +27,12 @@ void PotionApp::close_request(receive_struct_t receiveStruct, route_struct_t rou
   }
 }
 
-static int last_index_of(std::string str, char character) {
-  
-  for (int i = str.length()-1; i > -1; i--) {
-    //std::cout << i << " " << str[i] << std::endl;
-    if (str[i] == character) {
-      return i;
-    }
-  }
-  return -1;
-  
-}
 
 PotionApp::PotionApp(int port) : server(port) {
 
 }
 
+/*
 void test() {
 
   fs::path current_file = fs::absolute(__FILE__);
@@ -68,6 +58,8 @@ void test() {
 
 }
 
+*/
+
 
 void PotionApp::run () {
 
@@ -90,23 +82,13 @@ void PotionApp::run () {
 
 void PotionApp::handle_connection(int socket) {
   
-    std::string html_body = "<html><body><h1>Hello, World!</h1></body></html>";
-
-    std::string http_response =
-      "HTTP/1.1 200 OK\n"
-      "Content-Type: text/html\n"
-      "Content-Length: " + std::to_string(html_body.length()) + "\n"
-      "\n" +
-      html_body + "\n"; 
-  
-
   receive_struct_t receiveStruct = server.receive(60, socket, 2*KB);
 
 
   route_struct_t routeStruct;
 
   if (receiveStruct.bytes_read == 0) {
-    http_response = "HTTP/1.1 504 Gateway Timeout";
+    std::string http_response = "HTTP/1.1 504 Gateway Timeout";
     server.send_str(http_response, socket);
     //close_request(receiveStruct, routeStruct, socket);
     delete receiveStruct.buffer;
@@ -120,12 +102,8 @@ void PotionApp::handle_connection(int socket) {
   Response response(&request);
 
   
-
-  
   std::string route = request.get_route();
   std::string method = request.get_method();
-
-  
 
   if (!route_map.count(route)) {
     routeStruct = response.send_status_code(this, 404);
@@ -134,31 +112,22 @@ void PotionApp::handle_connection(int socket) {
   else if (!route_map[route].count(method)) {
     routeStruct = response.send_status_code(this, 405);
   }
+  else if (request.is_accessory_file_request(route)) {
+    routeStruct = response.serve_static_file(this, route);
+  }
   else {
     route_handler_func_t* func = route_map[route][method];
     routeStruct = func(this, &request, &response);
   }
 
-  
-  int lof = last_index_of(route, '.');
-  
-  if (lof > 0) {
-    
-    if (route.substr(lof, route.length()-lof) == ".js") {
-      try {
+   
 
-        routeStruct = response.send_file(this, route.substr(1, route.length()), "application/javascript");
-      } catch (const std::exception& e) {
-        std::cout << "ERROR\n";
-        routeStruct = response.send_status_code(this, 404);
-      }
-    }
-  
-  } 
-  
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
   close_request(receiveStruct, routeStruct, socket);
 
   std::string req_out = "<" + method + " " + route + ">";
-  std::cout << req_out << std::endl;
+  //std::cout << req_out << std::endl;
+  std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
+  int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
+  std::cout << static_folder << " " << read_timeout << std::endl;
 }
