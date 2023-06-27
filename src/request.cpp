@@ -96,6 +96,19 @@ void Request::parse_headers() {
 
 
   char character;
+  std::string first_word = "";
+  for (int i = 0; i < 7; i++) {
+    first_word += static_cast<char>((*receiveStruct.buffer)[i]);
+  }
+  int fi = first_index_of(first_word, ' ');
+  if (fi < 0) {
+    return;
+  }
+  first_word = first_word.substr(0, fi+1);
+  if (!valid_method(first_word)) {
+    return;
+  }
+
   for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
     character = static_cast<char>((*receiveStruct.buffer)[i]);
     request_body += character;

@@ -15,7 +15,20 @@ int last_index_of(std::string str, char character) {
   return -1;
 }
 
+int first_index_of(std::string str, char character) {
+  for (int i = 0; i < str.length(); i++) {
+    if (str[i] == character) {
+      return i;
+    }
+  }
+  return -1;
+}
 
+bool valid_method(std::string method) {
+  
+  
+
+}
 
 bool is_accessory_file_request(std::string route) {
 
@@ -31,3 +44,4 @@ void string_to_char(std::string str, char* buffer) {
    
   str.copy(buffer, str.length());
 }
+
