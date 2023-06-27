@@ -26,7 +26,14 @@ class PotionApp {
     void close_request(receive_struct_t receiveStruct, route_struct_t routeStruct, int socket);
   public:
 
-    std::map<std::string, config_t> config;
+    std::map<std::string, config_t> config = {
+
+      {"STATIC_FOLDER", "/static"},
+      {"READ_TIMEOUT", 60},
+      {"READ_SIZE", 2} // in kilobytes
+
+
+    };
     
     PotionApp(int port);
 
