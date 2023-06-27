@@ -81,7 +81,9 @@ void PotionApp::run () {
 
 
 void PotionApp::handle_connection(int socket) {
+
   receive_struct_t receiveStruct = server.receive(std::get<int>(config["READ_TIMEOUT"]), socket, std::get<int>(config["READ_SIZE"]) * KB);
+  route_struct_t routeStruct;
 
   if (receiveStruct.bytes_read == 0) {
     std::string http_response = "HTTP/1.1 504 Gateway Timeout";
@@ -91,6 +93,7 @@ void PotionApp::handle_connection(int socket) {
     server.close_connection(socket);
     return;
   }
+
 
   Request request(receiveStruct);
   request.parse_headers();

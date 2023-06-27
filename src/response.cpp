@@ -4,6 +4,7 @@
 
 #include "../includes/response.hpp"
 #include "../includes/request.hpp"
+#include "../includes/utils.hpp"
 
 namespace fs = std::filesystem;
 
@@ -12,16 +13,11 @@ Response::Response(Request* r) : request(r) {
 
 }
 
-inline char* Response::string_to_char(std::string str, char* buffer) {
-   
-  str.copy(buffer, str.length());
-  return buffer;
-}
 
-inline void Response::error(std::string msg) {
-  throw std::runtime_error(msg);
+void r_test(std::string route) {
+  std::cout << last_index_of(route, '.') << std::endl;
+  
 }
-
 
 route_struct_t Response::send_string(PotionApp* app, std::string str) {
   

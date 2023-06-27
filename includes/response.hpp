@@ -25,8 +25,6 @@ class Response {
     Request* request;
     //std::map<std::string, std::string> headers_map;
     std::vector<header_vect_struct_t> headers_vect;
-    inline char* string_to_char(std::string str, char* buffer);
-    inline void error(std::string msg);
 
     std::string build_headers(int code, bool content);
 
@@ -48,6 +46,6 @@ class Response {
   
 };
 
-
+void r_test(std::string route);
 
 #endif

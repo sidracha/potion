@@ -6,6 +6,7 @@
 
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/request.hpp"
+#include "../includes/utils.hpp"
 
 
 /*
@@ -183,23 +184,6 @@ void Request::parse_headers() {
 
 }
 
-static int last_index_of(std::string str, char character) {
-  for (int i = str.length()-1; i > -1; i--) {
-    if (str[i] == character) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-bool Request::is_accessory_file_request(std::string route) {
-
-  int extension_pos = last_index_of(route, '.');
-  if (extension_pos < 0 || extension_pos == route.length()) {
-    return false;
-  }
-  return true;
-}
   
 
 std::string Request::get_header_value(std::string key) {
