@@ -13,13 +13,16 @@ Response::Response(Request* r) : request(r) {
 
 }
 
+void Response::set_static_folder(std::string sf) {
+  STATIC_FOLDER = sf;
+}
 
 void r_test(std::string route) {
   std::cout << last_index_of(route, '.') << std::endl;
   
 }
 
-route_struct_t Response::send_string(PotionApp* app, std::string str) {
+route_struct_t Response::send_string(std::string str) {
   
   std::string headers = 
     "HTTP/1.1 200 OK\r\n"
@@ -43,16 +46,46 @@ route_struct_t Response::send_string(PotionApp* app, std::string str) {
 }
 
 
-route_struct_t Response::serve_static_file(PotionApp* app, std::string file_path) {
+route_struct_t Response::serve_static_file(std::string file_path) {
   
-  //std::string static_path = app.get_config("static_folder");
-  std::string static_path = "";
-  route_struct_t routeStruct;
+  //std::string static_path = app->config["STATIC_FOLDER"] + file_path;
+  route_struct_t routeStruct; 
+  //std::cout << file_path << std::endl;
+  if (file_path[0] == '/') {
+    file_path = file_path.substr(1, file_path.length()-1);
+  }
+  std::string fp = STATIC_FOLDER + "/" + file_path;
+  fs::path path = fp;
+  std::cout << fp << std::endl;
+  if (!file_exists(fp)) {
+    return send_status_code(404);
+  }
+  //std::cout << "here\n";  
+  size_t f_size = fs::file_size(path);
+  
+  set_header("Content-Type", extension_to_content_type(get_file_extension(file_path)));
+  set_header("Content-Length", std::to_string(f_size));
+  std::string headers = build_headers(200, true);
+  
+  size_t header_len = headers.length();
+  size_t buffer_size = f_size + header_len;
+  char* buffer = new char[buffer_size];
+
+  for (size_t i = 0; i < header_len; i++) {
+    buffer[i] = headers[i];
+  }
+
+  std::ifstream file(path);
+  file.read(buffer + header_len, f_size);
+  
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = buffer_size;
+
   return routeStruct;
 
 }
 
-route_struct_t Response::render(PotionApp* app, std::string file_path) {
+route_struct_t Response::render(std::string file_path) {
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
@@ -79,7 +112,18 @@ route_struct_t Response::render(PotionApp* app, std::string file_path) {
   return routeStruct;
 }
 
+route_struct_t Response::send_status_code(int status_code) {
 
+  std::string str = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";
+  route_struct_t routeStruct;
+  char* buffer = new char[str.length()];
+  string_to_char(str, buffer);
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = str.length();
+  return routeStruct;
+}
+
+/*
 route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) {
   
   //for now only 404 and 405 supported add later
@@ -116,8 +160,9 @@ route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) 
   return routeStruct;
 
 }
+*/
 
-route_struct_t Response::send_file(PotionApp* app, std::string file_path, std::string content_type) {
+route_struct_t Response::send_file(std::string file_path, std::string content_type) {
   
 
   fs::path path = file_path;
@@ -159,8 +204,11 @@ void Response::set_header(std::string key, std::string value) {
 }
 
 std::string Response::build_headers(int status_code, bool content) {
-  
-  std::string headers_str = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";
+  std::string phrase = code_to_phrase(status_code);
+  if (phrase == "") {
+    error("Invalid status code");
+  }
+  std::string headers_str = "HTTP/1.1 " + std::to_string(status_code) + " " + phrase + "\r\n";
   for (size_t i = 0; i < headers_vect.size(); i++) {
     
     headers_str = headers_str + headers_vect[i].key + ": " + headers_vect[i].value;

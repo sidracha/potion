@@ -97,7 +97,14 @@ void Request::parse_headers() {
 
   char character;
   std::string first_word = "";
-  for (int i = 0; i < 7; i++) {
+  int to;
+  if (receiveStruct.bytes_read < 7) {
+    to = receiveStruct.bytes_read;
+  } 
+  else {
+    to = 7;
+  }
+  for (int i = 0; i < to; i++) {
     first_word += static_cast<char>((*receiveStruct.buffer)[i]);
   }
   int fi = first_index_of(first_word, ' ');
@@ -163,6 +170,9 @@ void Request::parse_headers() {
   std::string key = "";
   std::string word2 = "";
   for (int i = 1; i < lines.size(); i++) {
+    if (line == "\r\n") {
+      return;
+    }
     key = "";
     word = "";
     

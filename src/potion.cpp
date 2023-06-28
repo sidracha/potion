@@ -10,6 +10,7 @@
 #include "../includes/potion.hpp"
 #include "../includes/request.hpp"
 #include "../includes/response.hpp"
+#include "../includes/utils.hpp"
 
 #define KB 1024
 
@@ -100,33 +101,38 @@ void PotionApp::handle_connection(int socket) {
   
   Response response(&request);
 
-  
+  std::string sf = std::get<std::string>(config["STATIC_FOLDER"]);
+  if (sf[0] == '/') {
+    sf = sf.substr(1, sf.length()-1);
+  }
+  response.set_static_folder(sf);
+
   std::string route = request.get_route();
   std::string method = request.get_method();
 
-  if (!route_map.count(route)) {
-    routeStruct = response.send_status_code(this, 404);
-  }
   
-  else if (!route_map[route].count(method)) {
-    routeStruct = response.send_status_code(this, 405);
+  if (is_accessory_file_request(route)) {
+    routeStruct = response.serve_static_file(route);
   }
-  else if (request.is_accessory_file_request(route)) {
-    routeStruct = response.serve_static_file(this, route);
+  else if (!route_map.count(route)) {
+    routeStruct = response.send_status_code(404);
+  }
+  else if (!route_map[route].count(method)) {
+    routeStruct = response.send_status_code(405);
   }
   else {
     route_handler_func_t* func = route_map[route][method];
     routeStruct = func(this, &request, &response);
   }
 
-   
+
 
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
   close_request(receiveStruct, routeStruct, socket);
 
   std::string req_out = "<" + method + " " + route + ">";
   //std::cout << req_out << std::endl;
-  std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
+  //std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
   int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
-  std::cout << static_folder << " " << read_timeout << std::endl;
+  //std::cout << static_folder << " " << read_timeout << std::endl;
 }

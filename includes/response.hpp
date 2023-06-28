@@ -22,6 +22,8 @@ class Response {
   } header_vect_struct_t;
   private:
     
+    std::string STATIC_FOLDER;
+    
     Request* request;
     //std::map<std::string, std::string> headers_map;
     std::vector<header_vect_struct_t> headers_vect;
@@ -31,19 +33,20 @@ class Response {
   public:
     Response(Request* r);
 
-    route_struct_t send_string(PotionApp* app, std::string str);
-    route_struct_t render(PotionApp* app, std::string file_path);
-    route_struct_t send_status_code(PotionApp* app, uint16_t status_code);
-    route_struct_t send_file(PotionApp* app, std::string file_path, std::string content_type);
+    route_struct_t send_string(std::string str);
+    route_struct_t render(std::string file_path);
+    route_struct_t send_status_code(int status_code);
+    route_struct_t send_file(std::string file, std::string content_type);
 
-    route_struct_t send_js_file(PotionApp* app, std::string file_path);
-    route_struct_t serve_static_file(PotionApp* app, std::string file_path);
+    route_struct_t send_js_file(std::string file_path);
+    route_struct_t serve_static_file(std::string file_path);
 
     void set_header(std::string key, std::string value);
 
     std::string code_to_phrase(int code);
 
-  
+    void set_static_folder(std::string sf);
+
 };
 
 void r_test(std::string route);
