@@ -56,7 +56,7 @@ route_struct_t Response::serve_static_file(std::string file_path) {
   }
   std::string fp = STATIC_FOLDER + "/" + file_path;
   fs::path path = fp;
-  std::cout << fp << std::endl;
+  //std::cout << fp << std::endl;
   if (!file_exists(fp)) {
     return send_status_code(404);
   }

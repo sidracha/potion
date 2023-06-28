@@ -131,7 +131,7 @@ void PotionApp::handle_connection(int socket) {
   close_request(receiveStruct, routeStruct, socket);
 
   std::string req_out = "<" + method + " " + route + ">";
-  //std::cout << req_out << std::endl;
+  std::cout << req_out << std::endl;
   //std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
   int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
   //std::cout << static_folder << " " << read_timeout << std::endl;
