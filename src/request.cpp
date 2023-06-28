@@ -7,86 +7,8 @@
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/request.hpp"
 #include "../includes/utils.hpp"
+#include <curl/curl.h>
 
-
-/*
-void Request::parse_headers() {
-  
-  std::string method = "";
-  std::string request_str = "";
-  std::string route = "";
-  std::string line_str = "";
-
-  size_t line = 0;
-  bool found_method = false;
-  bool on_route = false;
-
-  for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
-    
-    std::byte bt = (*receiveStruct.buffer)[i];
-    char character = static_cast<char>(bt);
-    request_str += character;
-    line_str += character;
-    if (on_route) {
-      route += character;
-    }
-
-    if (character == '\n') {
-      line++;
-      
-      if (line == 0) {
-        continue;
-      }
-      
-      std::string key;
-      std::string value;
-      bool key_found = false;
-      std::string word = "";
-      for (int j = 0; j < line_str.length(); j++) {
-        
-        word += line_str[j];
-        if (!key_found && line_str[j] == ':') {
-          key = word;
-          key_found = true;
-          continue;
-        }
-        if (line_str[j] == '\r' && key_found) {
-          value = word.substr(1, word.length()-3);
-        }
-
-      }
-      header_map[key] = value;
-      
-
-    }
-
-    if (line == 0 && character == ' ') {
-      if (!found_method && method == "") {
-        continue;
-      }
-
-      
-      if (!found_method) {
-        header_map["method"] = request_str.substr(0, request_str.length()-1);
-        found_method = true;
-        on_route = true;
-      }
-      else {
-        on_route = false;
-        header_map["route"] = route.substr(0, route.length()-1);
-      }
-    }
-
-      
-      
-  }
-  bool print_req = true;
-  if (print_req) {
-    std::cout << request_str << std::endl;
-  }
-
-}
-*/
 
 void Request::parse_headers() {
 
@@ -97,12 +19,15 @@ void Request::parse_headers() {
 
   char character;
   std::string first_word = "";
+  
+  //makes sure that the first word of the request is indeed a valid method
+
   int to;
   if (receiveStruct.bytes_read < 7) {
     to = receiveStruct.bytes_read;
   } 
   else {
-    to = 7;
+    to = 8;
   }
   for (int i = 0; i < to; i++) {
     first_word += static_cast<char>((*receiveStruct.buffer)[i]);
@@ -113,6 +38,14 @@ void Request::parse_headers() {
   }
   first_word = first_word.substr(0, fi+1);
   if (!valid_method(first_word)) {
+    return;
+  }
+  
+  if (receiveStruct. bytes_read <= fi) { //if the request is just a word and a space it returns nothing
+    return;
+  }
+
+  if (static_cast<char>((*receiveStruct.buffer)[fi+1]) != '/') { //returns if slash does not immedietely follow the space
     return;
   }
 
@@ -153,14 +86,6 @@ void Request::parse_headers() {
       route = w.substr(0, w.length()-1);
       header_map["method"] = method;
       header_map["route"] = route;
-      //test_struct ts;
-      //ts.key = "method";
-      //ts.value = method;
-      //test_vect.push_back(std::move(ts));
-      //test_struct ts2;
-      //ts2.key = "route";
-      //ts2.value = route;
-      //test_vect.push_back(std::move(ts2));
       break;
     }
 
@@ -191,16 +116,18 @@ void Request::parse_headers() {
         if (word == "\r" || word == "\r\n" || word == "\n" || key == "\r" || key == "") {break;}
         word2 = word.substr(1, word.length()-1);
         header_map[key] = word2;
-        //std::cout << key << header_map[key] << std::endl;
-        //test_struct ts3;
-        //ts3.key = key;
-        //ts3.value = word2;
-        //test_vect.push_back(std::move(ts3));
         
       }
     }
 
   
+  }
+  //here we get the query params 
+  //need to support url encoding at some point. added to todo
+  std::string r = header_map["route"];
+  
+  for (size_t i = 0; i < r.length(); i++) {
+    
   }
 
   //std::cout << request_body << std::endl;
