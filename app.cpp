@@ -26,6 +26,12 @@ route_struct_t handle_get_video(PotionApp*app, Request* request, Response* respo
   return response->send_file("crashothy.mp4", "video/mp4");
 }
 
+route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* response) {
+  std::map<std::string, std::string> args = request->get_args();
+  std::cout << args["key1"] << std::endl;
+  return response->send_string("Hi!");
+}
+
 
 int main () {
   
@@ -38,6 +44,9 @@ int main () {
   app.set_get("/string", &handle_get_string);
   app.set_get("/image", &handle_get_img);
   app.set_get("/video", &handle_get_video);
+
+
+  app.set_get("/hello", &handle_get_hello);
 
   make_routes(&app);
 

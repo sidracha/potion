@@ -11,6 +11,7 @@ bool file_exists(fs::path path);
 std::string get_file_extension(std::string name);
 std::string extension_to_content_type(std::string extension);
 
+std::string urldecode(std::string str);
 
 void error(std::string msg);
 

@@ -124,17 +124,40 @@ void Request::parse_headers() {
   }
   //here we get the query params 
   //need to support url encoding at some point. added to todo
-  std::string r = header_map["route"];
-  
-  for (size_t i = 0; i < r.length(); i++) {
-    
-  }
-
-  //std::cout << request_body << std::endl;
+  parse_q_params();
 
 }
 
-  
+
+void Request::parse_q_params () {
+  std::string route = header_map["route"];
+  int fi = first_index_of(route, '?');
+  if (fi < 0 || fi == route.length()) {
+    return;
+  }
+  std::string key = "";
+  std::string word = "";
+  for (int i = fi+1; i < route.length(); i++) {
+    if (route[i] == '=' && word != "") {
+      key = word;
+      word = "";
+      continue;
+    }
+    if (route[i] == '&' && word != "" && key != "") {
+      q_params[key] = word;
+      key = "";
+      word = "";
+      continue;
+    }
+    word += route[i];
+  }
+
+  if (key != "" && word != "") {
+      q_params[key] = word;
+  }
+  header_map["route"] = route.substr(0, fi);
+
+}
 
 std::string Request::get_header_value(std::string key) {
   return header_map[key];
@@ -147,4 +170,7 @@ std::string Request::get_method () { //returns first word of request
 std::string Request::get_route () {
   return header_map["route"];
 }
+
+
+
 

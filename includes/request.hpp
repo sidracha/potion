@@ -12,7 +12,9 @@ class Request {
 
     std::map<std::string, std::string> header_map;
     std::map<std::string, char*> header_map_test;
-    
+    std::map<std::string, std::string> q_params;
+
+    void parse_q_params();
 
   public:
 
@@ -24,6 +26,8 @@ class Request {
     
     std::string get_route();
     std::string get_header_value(std::string key);
+
+    inline std::map<std::string, std::string> get_args() {return q_params;}
 
 };
 

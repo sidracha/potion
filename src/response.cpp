@@ -34,7 +34,6 @@ route_struct_t Response::send_string(std::string str) {
   for (size_t i = 0; i < headers.length(); i++) {
     buffer[i] = headers[i];
   }
-  std::cout << str << std::endl;
   for (size_t i = 0; i < str.length(); i++) {
     buffer[i+headers.length()] = str[i];
   }

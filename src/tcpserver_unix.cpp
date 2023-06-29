@@ -64,10 +64,12 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
     receiveStruct.buffer = buffer;
     return receiveStruct;
   }
-
+  
   int n;
+  int bytes_read = 0;
   while (1) {
     n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
+    bytes_read += n;
     if (n < 0) {
       error("ERROR reading from socket");
     }
@@ -79,9 +81,9 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
 
 
   }
-  size_t bytes_read = (*buffer).size();
+  //size_t bytes_read = (*buffer).size();
   receiveStruct.buffer = buffer;
-  receiveStruct.bytes_read = bytes_read;
+  receiveStruct.bytes_read = static_cast<size_t>(bytes_read);
   return receiveStruct;
 
     
