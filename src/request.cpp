@@ -160,6 +160,9 @@ void Request::parse_q_params () {
 }
 
 std::string Request::get_header_value(std::string key) {
+  if (!header_map.count(key)) {
+    return "";
+  }
   return header_map[key];
 }
 

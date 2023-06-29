@@ -2,9 +2,11 @@
 #include <fstream>
 #include <iostream>
 
+
 #include "../includes/response.hpp"
 #include "../includes/request.hpp"
 #include "../includes/utils.hpp"
+
 
 namespace fs = std::filesystem;
 
@@ -185,6 +187,7 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
     buffer[i] = http_response[i];
   }
   std::ifstream file(p);
+  
 
   file.read(buffer + header_len, f_size);
   route_struct_t routeStruct;

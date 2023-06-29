@@ -1,10 +1,13 @@
 #include <filesystem>
 
+#include <boost/json/src.hpp>
+#include <boost/json.hpp>
 
 #include "includes/potion.hpp"
 #include "fl.hpp"
 
 namespace fs = std::filesystem;
+namespace json = boost::json;
 
 route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
   
@@ -34,6 +37,23 @@ route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* resp
 
 
 int main () {
+
+
+  json::object obj;
+  
+  std::vector<int> vect = {1, 2, 3};
+  json::value value = json::value_from(vect);
+
+  obj["list"] = value;
+  json::value v2 = obj["list"];
+  
+  std::vector<int> arr = value_to<std::vector<int>>(v2);
+  std::cout << arr[1] << std::endl;
+
+  //std::cout << v2[2] << std::endl;
+  
+
+  return 0;
   
   PotionApp app(8080);
 
