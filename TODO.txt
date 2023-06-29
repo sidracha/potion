@@ -1,7 +1,3 @@
-***URI ENCODING/DECODING AND HEADER PARSER***
-
-
-
 1. Byte range requests
 2. JSON
 3. Sessions
