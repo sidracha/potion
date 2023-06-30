@@ -1,7 +1,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-
+#include <boost/json.hpp>
 
 #include "../includes/response.hpp"
 #include "../includes/request.hpp"
@@ -9,7 +9,7 @@
 
 
 namespace fs = std::filesystem;
-
+namespace json = boost::json;
 
 Response::Response(Request* r) : request(r) {
 
@@ -83,6 +83,56 @@ route_struct_t Response::serve_static_file(std::string file_path) {
   routeStruct.buffer_size = buffer_size;
 
   return routeStruct;
+
+}
+
+//only supports application/json for now
+
+void Response::populate_headers(char* buffer, size_t buffer_size, std::string headers){
+  
+  if (buffer_size > headers.length()) {
+    return;
+  }
+
+  for (size_t i = 0; i < headers.length(); i++) {
+    buffer[i] = headers[i];
+  }
+  
+
+}
+
+
+route_struct_t Response::create_route_struct(char* buffer, size_t buffer_size) {
+  route_struct_t rs;
+  rs.buffer = buffer;
+  rs.buffer_size = buffer_size;
+  return rs;
+}
+
+route_struct_t Response::send_json(json::object obj) {
+  
+  std::string s = json::serialize(obj);
+  std::cout << s << std::endl;
+  set_header("Content-Type", "application/json");
+  set_header("Content-Length", std::to_string(s.length()));
+  std::string headers = build_headers(200, true);
+  
+  size_t buffer_size = s.length() + headers.length();
+  char* buffer = new char[buffer_size];
+  //populate_headers(buffer, buffer_size, headers);
+  
+  for (size_t i = 0; i < headers.length(); i++) {
+    buffer[i] = headers[i];
+  }
+  
+  for (size_t i = 0; i < s.length(); i++) {
+    buffer[i+headers.length()] = s[i];
+  }
+  
+
+  std::vector vect = value_to<std::vector<int>>(obj["list"]);
+  std::cout << vect[2]<< std::endl;
+  return create_route_struct(buffer, buffer_size);
 
 }
 

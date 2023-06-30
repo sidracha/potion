@@ -3,7 +3,11 @@
 
 #include <map>
 
+#include <boost/json.hpp>
+
 #include "tcpserver_unix.hpp"
+
+namespace json = boost::json;
 
 
 class Request {
@@ -26,6 +30,7 @@ class Request {
     
     std::string get_route();
     std::string get_header_value(std::string key);
+    json::object get_json();
 
     inline std::map<std::string, std::string> get_args() {return q_params;}
 

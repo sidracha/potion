@@ -35,6 +35,13 @@ route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* resp
   return response->send_string("Hi!");
 }
 
+route_struct_t handle_get_json(PotionApp* app, Request* request, Response* response) {
+  json::object obj;
+  std::vector<int> vect = {4, 5, 6, 9};
+  json::value value = json::value_from(vect);
+  obj["list"] = value;
+  return response->send_json(obj);
+}
 
 int main () {
 
@@ -52,8 +59,9 @@ int main () {
 
   //std::cout << v2[2] << std::endl;
   
+  std::string s = json::serialize(obj);
+  std::cout << s << std::endl;
 
-  return 0;
   
   PotionApp app(8080);
 
@@ -64,7 +72,7 @@ int main () {
   app.set_get("/string", &handle_get_string);
   app.set_get("/image", &handle_get_img);
   app.set_get("/video", &handle_get_video);
-
+  app.set_get("/json", &handle_get_json);
 
   app.set_get("/hello", &handle_get_hello);
 

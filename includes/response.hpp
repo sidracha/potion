@@ -3,7 +3,12 @@
 
 #include <string>
 
+#include <boost/json.hpp>
+
 #include "request.hpp"
+
+
+namespace json = boost::json;
 
 class PotionApp;
 
@@ -29,6 +34,8 @@ class Response {
     std::vector<header_vect_struct_t> headers_vect;
 
     std::string build_headers(int code, bool content);
+    void populate_headers(char* buffer, size_t buffer_size, std::string headers);
+    route_struct_t create_route_struct(char* buffer, size_t buffer_size);
 
   public:
     Response(Request* r);
@@ -37,10 +44,12 @@ class Response {
     route_struct_t render(std::string file_path);
     route_struct_t send_status_code(int status_code);
     route_struct_t send_file(std::string file, std::string content_type);
-
+    
     route_struct_t send_js_file(std::string file_path);
     route_struct_t serve_static_file(std::string file_path);
 
+    route_struct_t send_json(json::object obj);
+    
     void set_header(std::string key, std::string value);
 
     std::string code_to_phrase(int code);

@@ -2,13 +2,14 @@
 #include <iostream>
 #include <bitset>
 #include <algorithm>
-
+#include <boost/json.hpp>
 
 #include "../includes/tcpserver_unix.hpp"
 #include "../includes/request.hpp"
 #include "../includes/utils.hpp"
-#include <curl/curl.h>
+//#include <curl/curl.h>
 
+namespace json = boost::json;
 
 void Request::parse_headers() {
 
@@ -174,6 +175,11 @@ std::string Request::get_route () {
   return header_map["route"];
 }
 
+json::object get_json() {
+  
+  json::object obj;
+  return obj;
 
+}
 
 
