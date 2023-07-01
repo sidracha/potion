@@ -1,8 +1,6 @@
 
-content start position
 
 1. Byte range requests
-2. JSON
 3. Sessions
 4. Configurations
 5. HTTPS?
@@ -13,3 +11,7 @@ Documentation
 
 boost json setup
 configs
+
+check
+
+JSON
