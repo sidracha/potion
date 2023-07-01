@@ -112,7 +112,7 @@ route_struct_t Response::create_route_struct(char* buffer, size_t buffer_size) {
 route_struct_t Response::send_json(json::object obj) {
   
   std::string s = json::serialize(obj);
-  std::cout << s << std::endl;
+  //std::cout << s << std::endl;
   set_header("Content-Type", "application/json");
   set_header("Content-Length", std::to_string(s.length()));
   std::string headers = build_headers(200, true);
@@ -131,7 +131,7 @@ route_struct_t Response::send_json(json::object obj) {
   
 
   std::vector vect = value_to<std::vector<int>>(obj["list"]);
-  std::cout << vect[2]<< std::endl;
+  //std::cout << vect[2]<< std::endl;
   return create_route_struct(buffer, buffer_size);
 
 }

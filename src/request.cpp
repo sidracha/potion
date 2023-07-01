@@ -12,6 +12,24 @@
 namespace json = boost::json;
 
 void Request::parse_headers() {
+  
+
+  /*
+  std::string ro = "";
+  for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
+    
+    char b = static_cast<char>((*receiveStruct.buffer)[i]);
+    
+    std::cout << int(b) << " ";
+    if (b == '\n') {
+      std::cout << std::endl;
+    }
+
+    ro += b;
+  }
+  //std::cout << ro << std::endl;
+  */
+
 
   std::string line = "";
   std::vector<std::string> lines;
@@ -49,10 +67,21 @@ void Request::parse_headers() {
   if (static_cast<char>((*receiveStruct.buffer)[fi+1]) != '/') { //returns if slash does not immedietely follow the space
     return;
   }
+  
 
   for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
     character = static_cast<char>((*receiveStruct.buffer)[i]);
     request_body += character;
+    if (i > 0 && character == '\r' && static_cast<char>((*receiveStruct.buffer)[i-1]) == '\n') {
+      if (i+2 >= receiveStruct.bytes_read) {
+        break;
+      }
+      
+      content_start = i+2;
+      break;
+    }
+    //std::cout << "here\n";
+    //request_body += character;
     if (character == '\r') {
       lines.push_back(line);
       line = "";
@@ -61,10 +90,10 @@ void Request::parse_headers() {
     if (character == '\n') {
       continue;
     }
-
     line += character;
     
   }
+  
 
   char c;
   std::string w = "";
@@ -91,7 +120,7 @@ void Request::parse_headers() {
     }
 
   }
-  
+  //std::cout << "here\n"; 
   std::string word = "";
   std::string key = "";
   std::string word2 = "";
@@ -125,8 +154,16 @@ void Request::parse_headers() {
   }
   //here we get the query params 
   //need to support url encoding at some point. added to todo
+  
   parse_q_params();
-
+  
+  //std::cout << request_body << std::endl;
+  
+  //std::cout << "content start: " << content_start << std::endl;
+  //std::cout << "length: " << request_body.length() << std::endl;
+  //std::cout << "req-last: " << int(request_body[request_body.length()-1]) << std::endl;
+  //std::cout << "content-first: " << int((*receiveStruct.buffer)[content_start]) << std::endl;
+  //std::cout << (*receiveStruct.buffer)[content_start] << std::endl;
 }
 
 
@@ -175,9 +212,30 @@ std::string Request::get_route () {
   return header_map["route"];
 }
 
-json::object get_json() {
-  
+json::object Request::get_json() {
+    
+  std::string json_string = "";
+  for (size_t i = content_start; i < receiveStruct.bytes_read; i++) {
+    json_string += static_cast<char>((*receiveStruct.buffer)[i]);
+  }
+
+  json::value jv;
   json::object obj;
+
+  try {
+    std::error_code ec;
+    jv = json::parse(json_string, ec);
+    if (ec) {
+      std::cout << "JSON Parse failed\n";
+      return obj;
+    }
+    obj = value_to<json::object>(jv);
+  }
+  catch(std::bad_alloc const& e) {
+    std::cout << "JSON Parse failed\n";
+  }
+
+
   return obj;
 
 }

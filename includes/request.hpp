@@ -17,6 +17,8 @@ class Request {
     std::map<std::string, std::string> header_map;
     std::map<std::string, char*> header_map_test;
     std::map<std::string, std::string> q_params;
+    
+    size_t content_start = 0;
 
     void parse_q_params();
 
@@ -33,7 +35,9 @@ class Request {
     json::object get_json();
 
     inline std::map<std::string, std::string> get_args() {return q_params;}
-
+    inline std::vector<std::byte>* get_bytestream() {return receiveStruct.buffer;}
+    inline std::vector<std::byte>* get_bytestream_content_start() {return receiveStruct.buffer+content_start;}
+    inline size_t get_content_start_index() {return content_start;}
 };
 
 
