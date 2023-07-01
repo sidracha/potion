@@ -1,10 +1,13 @@
 #include <iostream>
 #include <map>
 #include <filesystem>
+#include <set>
 
 #include "../includes/utils.hpp"
 
 namespace fs = std::filesystem;
+
+std::set<std::string> methods = {"GET", "HEAD", "POST", "PUT", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"};
 
 void error(std::string msg) {
   throw std::runtime_error(msg);
@@ -30,6 +33,7 @@ int first_index_of(std::string str, char character) {
 
 bool valid_method(std::string method) {
   
+
   return true;  
 
 }
