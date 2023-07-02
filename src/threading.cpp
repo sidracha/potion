@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include "../includes/potion.hpp"
+#include "../include/potion.hpp"
 
 
 

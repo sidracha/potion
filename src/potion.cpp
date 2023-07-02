@@ -7,11 +7,12 @@
 #include <cstddef>
 #include <format>
 
-#include "../includes/tcpserver_unix.hpp"
-#include "../includes/potion.hpp"
-#include "../includes/request.hpp"
-#include "../includes/response.hpp"
-#include "../includes/utils.hpp"
+
+#include "../include/tcpserver_unix.hpp"
+#include "../include/potion.hpp"
+#include "../include/request.hpp"
+#include "../include/response.hpp"
+#include "../include/utils.hpp"
 
 #define KB 1024
 

@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <boost/json.hpp>
 
-#include "../includes/tcpserver_unix.hpp"
-#include "../includes/request.hpp"
-#include "../includes/utils.hpp"
+#include "../include/tcpserver_unix.hpp"
+#include "../include/request.hpp"
+#include "../include/utils.hpp"
 //#include <curl/curl.h>
 
 namespace json = boost::json;

@@ -1,9 +1,9 @@
 #include <filesystem>
 
-#include <boost/json/src.hpp>
-#include <boost/json.hpp>
+//#include <boost/json/src.hpp>
+//#include <boost/json.hpp>
 
-#include "includes/potion.hpp"
+#include "include/potion.hpp"
 #include "fl.hpp"
 
 namespace fs = std::filesystem;
@@ -21,7 +21,7 @@ route_struct_t handle_get_string(PotionApp* app, Request* request, Response* res
 
 route_struct_t handle_get_img(PotionApp* app, Request* request, Response* response) {
   
-  return response->send_file("catimg.jpeg", "image/jpeg");
+  return response->send_file("tests/catimg.jpeg", "image/jpeg");
 
 } 
 
