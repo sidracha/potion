@@ -25,13 +25,20 @@ Installing and Setting Up
 ------------------------
 
 Potion uses the boost/json library. Make sure to have `boost`_ installed.
+
 In the /bin folder, you will find the compiled binaries for x86-64 and arm64 architectures. Download the right one.
+
 Download the library and link it with your program when compiling.
+
+.._boost: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
+
 Use the
 .. code-block:: text
 
   -I/path/to/boost/libary
+
   -L/folder/where/binary/lives
+
   -lpotion_arm64
 
 compiler flags to link the potion and boost libraries with your app.
