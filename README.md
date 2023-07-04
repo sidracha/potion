@@ -29,6 +29,7 @@ In the /bin folder, you will find the compiled binaries for x86-64 and arm64 arc
 Download the library and link it with your program when compiling.
 Use the
 .. code-block:: text
+
   -I/path/to/boost/libary
   -L/folder/where/binary/lives
   -lpotion_arm64
