@@ -38,6 +38,7 @@ class Request {
     inline std::vector<std::byte>* get_bytestream() {return receiveStruct.buffer;}
     inline std::vector<std::byte>* get_bytestream_content_start() {return receiveStruct.buffer+content_start;}
     inline size_t get_content_start_index() {return content_start;}
+    inline receive_struct_t get_request_buffer() {return receiveStruct;}
 };
 
 
