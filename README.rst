@@ -1,54 +1,63 @@
-
 Potion
-======
+=====
 
-Potion is a very lightweight somewhat high performance web microframework for C++.
-This is NOT made for any commercial or any serious use, and bad things will happen if done so.
-It provides just enough features to make a somewhat comprehensive web application.
-Potion was inspired by Python's flask microframework.
+Potion is a very lightweight and somewhat high-performance web microframework. It is NOT made for any serious or commercial applications,
+and very bad things may happen if done so. Potion provides the barebones features for a comprehensive web application in a featherweight
+package. Potion was inspired by Python's Flask microframework.
 
-Notes:
+Important Notes
+---------------
 
-Potion ONLY works on UNIX-based Operating Systems (so no windows :[ ).
-Potiion uses C++20.
+Potion ONLY works on UNIX-based Operating Systems.
 
+It also uses C++20.
 
 Coming Soon
 -----------
 
-Support for sessions
-framework-level https
-Database sessions
+Sessions
 
 
 Installing and Setting Up
-------------------------
+-----------------------
 
-Potion uses the boost/json library. Make sure to have `boost`_ installed.
+You will need to install the `boost`_ library as Potion uses the boost/json parser and serializer.
 
-In the /bin folder, you will find the compiled binaries for x86-64 and arm64 architectures. Download the right one.
 
-Download the library and link it with your program when compiling.
+Use the 
 
-.._boost: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
-
-Use the
 .. code-block:: text
 
-  -I/path/to/boost/libary
+    -L/folder/where/compiled/library/lives
+    -lpotion_arm64
+    -I/path/to/boost/library
 
-  -L/folder/where/binary/lives
+.. _pip: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
 
-  -lpotion_arm64
+A Simple App
+----------------
 
-compiler flags to link the potion and boost libraries with your app.
+.. code-block:: C++
 
-Usage
------
-
-
+    route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
+      return send_string("Hello, World!");
+    }
   
+    int main () {
+      
+      int port = 8080;
+      PotionApp app(port);
 
+      app.set_get("/", &handle_get_home);
+      app.run();
+      return 0;
+      
+    }
+    
 
+.. code-block:: text
+
+    g++ -std=c++20 -I./boostlib -L./bin -lpotion_arm64 -o myapp
+    ./myapp
 
 
