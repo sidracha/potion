@@ -32,7 +32,7 @@ Use the
     -lpotion_arm64
     -I/path/to/boost/library
 
-.. _pip: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
+.. _boost: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
 
 A Simple App
 ----------------
