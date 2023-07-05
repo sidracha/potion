@@ -62,7 +62,65 @@ And then set the route and pass in a function pointer for the handler function a
 
     app.set_get("/", &handler_func);
     app.run();
+
+Return Values
+-------------
+
+To return anything from the handler function, use the given return methods in the Response object. They are defined as follows:
+
+.. code-block:: C++
+
+    route_struct_t send_string(std::string str); //returns a string
+    route_struct_t send_status_code(int status_code); //returns HTTP status code and nothing else
+    route_struct_t send_file(std::string file_path, std::string content_type); //sends a file
+    route_struct_t serve_static_file(std::string file_path); //sends the file found in the /static file folder
+    route_struct_t send_json(boost::json::object obj); //sends a boost/json object
+
+Other methods on the Response class:
+
+.. code-block:: C++ 
+
+    void set_header(std::string key, std::string value); //sets a response header to a value
+
+
+The Request
+-----------
+
+Here are the methods for the Request class:
+
+.. code-block:: C++
+
+    std::map<std::string, std::string> get_headers(); //returns the request headers
+    boost::json::object get_json(); //parses and returns any json value in request **ONLY WORKS WITH application/json CONTENT-TYPE**
+    std::map<std::string, std::string> get_args(); //returns the query parameters
     
+    receive_struct_t get_request_buffer(); //returns the request buffer
+    //receive_struct_t is defined as:
+    typedef struct {
+        std::vector<std::byte>* buffer;
+        size_t bytes_read;
+    }
+
+    size_t get_content_start_index(); //gets the index of the byte where the content of the request starts in the request buffer
+
+
+App Configurations
+-------------------
+
+.. code-block:: C++
+
+    std::map<std::string, std::variant<std::string, int>> config;
+
+Configs: 
+
+.. code-block:: C++
+
+    app.config["READ_TIMEOUT"] = int; //number of seconds before connection closes with no activity
+    app.config["READ_SIZE"] = int; //"chunk" size of reading from request in kilobytes (1028 bytes)
+    app.config["READ_SIZE_MAX"] = int; //maximum allowed number of kilobytes to be read from request
+
+    app.config["STATIC_FOLDER"] = std::string; //set the directory path from where app serves static files
+
 
 A Simple App
 ----------------
@@ -70,7 +128,7 @@ A Simple App
 .. code-block:: C++
 
     route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
-      return send_string("Hello, World!");
+      return response->send_string("Hello, World!");
     }
   
     int main () {
