@@ -14,7 +14,6 @@
 #include "../include/response.hpp"
 #include "../include/utils.hpp"
 
-#define KB 1024
 
 namespace fs = std::filesystem;
 
@@ -84,8 +83,13 @@ void PotionApp::run () {
 
 
 void PotionApp::handle_connection(int socket) {
+  
+  int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
+  int read_size = std::get<int>(config["READ_SIZE"]);
+  int buffer_size_max = std::get<int>(config["READ_SIZE_MAX"]);
+  receive_struct_t receiveStruct = server.receive(socket, read_timeout, static_cast<size_t>(read_size*KB), static_cast<size_t>(buffer_size_max));
 
-  receive_struct_t receiveStruct = server.receive(std::get<int>(config["READ_TIMEOUT"]), socket, std::get<int>(config["READ_SIZE"]) * KB);
+  //receive_struct_t receiveStruct = server.receive(std::get<int>(config["READ_TIMEOUT"]), socket, std::get<int>(config["READ_SIZE"]) * KB, 5);
   route_struct_t routeStruct;
 
   if (receiveStruct.bytes_read == 0) {
@@ -135,7 +139,7 @@ void PotionApp::handle_connection(int socket) {
   std::string req_out = "<" + method + " " + route + ">";
   std::cout << req_out << std::endl;
   //std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
-  int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
+  //int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
   //std::cout << static_folder << " " << read_timeout << std::endl;
   
 

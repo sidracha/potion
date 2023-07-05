@@ -13,6 +13,8 @@
 #include "response.hpp"
 #include "request.hpp"
 
+
+
 class PotionApp {
   
   using route_handler_func_t = route_struct_t (PotionApp* app, Request* request, Response* response);
@@ -31,7 +33,9 @@ class PotionApp {
 
       {"STATIC_FOLDER", "/static"},
       {"READ_TIMEOUT", 60},
-      {"READ_SIZE", 2} // in kilobytes
+      {"READ_SIZE", 1}, //In kilobytes
+      {"READ_SIZE_MAX", 1} //In kilobytes
+
 
 
     };

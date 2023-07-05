@@ -42,7 +42,7 @@ int TCPServer::accept_connection() {
 
 }
 
-receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_size) {
+receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_size, size_t read_size_max) {
   //char * buffer = new char[read_size]; 
   std::vector<std::byte> *buffer = new std::vector<std::byte>(read_size);
   struct timeval timeout;
@@ -69,16 +69,26 @@ receive_struct_t TCPServer::receive(int timeout_val, int socket, size_t read_siz
   int bytes_read = 0;
   while (1) {
     n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
-    bytes_read += n;
+    //bytes_read += n;
+    
+    
+    if (n > 0) {
+      bytes_read += n;
+    }
+    
     if (n < 0) {
       error("ERROR reading from socket");
     }
-    (*buffer).resize((*buffer).size() + read_size);
-
     if (static_cast<size_t>(n) < read_size) {
       break;
     }
 
+    (*buffer).resize(static_cast<size_t>(n) + read_size);
+    
+    if (bytes_read >= KB*read_size_max) {
+      std::cout << "READ MAX\n";
+      break;
+    }    
 
   }
   //size_t bytes_read = (*buffer).size();

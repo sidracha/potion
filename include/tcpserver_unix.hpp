@@ -10,6 +10,7 @@
 #include <vector>
 #include <cstddef>
 
+#define KB 1024
 
 typedef struct receive_struct_t {
   std::vector<std::byte>* buffer;
@@ -28,7 +29,7 @@ class TCPServer {
   public:
     TCPServer(int port);
     int accept_connection();
-    receive_struct_t receive(int timeout_val, int socket, size_t read_size); //timeout val in seconds
+    receive_struct_t receive(int socket, int timeout_val, size_t read_size, size_t read_size_max); //timeout val in seconds
     void close_connection(int socket);
     void send(char* buffer, size_t size, int socket);
     void send_str(const std::string& msg, int socket);
