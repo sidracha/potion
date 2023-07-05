@@ -145,7 +145,7 @@ A Simple App
 
 .. code-block:: text
 
-    g++ -std=c++20 -I./boostlib -L./bin -lpotion_arm64 app.cpp -o myapp
-    ./myapp
+    $ g++ -std=c++20 -I./boostlib -L./bin -lpotion_arm64 app.cpp -o myapp
+    $ ./myapp
 
 
