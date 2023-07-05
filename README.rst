@@ -39,6 +39,31 @@ compiler flags when compiling your app.
 Usage
 ======
 
+Initialize PotionApp object
+
+.. code-block:: C++
+
+    PotionApp app(int port);
+
+Route Handling
+---------------
+
+To handle routes, first define a route handler function like so:
+
+.. code-block:: C++
+
+    route_struct_t handler_func (PotionApp* app, Request* request, Response* response) {
+        //do stuff
+    }
+
+And then set the route and pass in a function pointer for the handler function and run the app:
+
+.. code-block:: C++
+
+    app.set_get("/", &handler_func);
+    app.run();
+    
+
 A Simple App
 ----------------
 
