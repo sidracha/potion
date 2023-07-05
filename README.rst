@@ -36,6 +36,9 @@ compiler flags when compiling your app.
 
 .. _boost: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
 
+Usage
+======
+
 A Simple App
 ----------------
 
