@@ -12,6 +12,8 @@ Potion ONLY works on UNIX-based Operating Systems.
 
 It also uses C++20.
 
+I am lazy so the binary in the /bin directory is the latest release.
+
 Coming Soon
 -----------
 
