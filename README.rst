@@ -115,11 +115,11 @@ Configs:
 
 .. code-block:: C++
 
-    app.config["READ_TIMEOUT"] = int; //number of seconds before connection closes with no activity
-    app.config["READ_SIZE"] = int; //"chunk" size of reading from request in kilobytes (1028 bytes)
-    app.config["READ_SIZE_MAX"] = int; //maximum allowed number of kilobytes to be read from request
+    app.config["READ_TIMEOUT"] = int; //number of seconds before connection closes with no activity. DEFAULT 30
+    app.config["READ_SIZE"] = int; //"chunk" size of reading from request in kilobytes (1028 bytes). DEFAULT 2
+    app.config["READ_SIZE_MAX"] = int; //maximum allowed number of kilobytes to be read from request. DEFAULT 512
 
-    app.config["STATIC_FOLDER"] = std::string; //set the directory path from where app serves static files
+    app.config["STATIC_FOLDER"] = std::string; //set the directory path from where app serves static files DEFAULT /static
 
 
 A Simple App
