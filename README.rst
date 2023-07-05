@@ -149,3 +149,12 @@ A Simple App
     $ ./myapp
 
 
+Contributing
+------------
+
+Open a pull request and it will be looked at.
+
+Issues
+------
+
+If there are any issues at all - serious or minor - please bring it up in the issues section 
