@@ -12,7 +12,7 @@ namespace json = boost::json;
 
 class PotionApp;
 
-typedef struct route_struct_t {
+typedef struct {
   char* buffer;
   size_t buffer_size;
 } route_struct_t;

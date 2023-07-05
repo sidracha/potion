@@ -1,9 +1,10 @@
 #include <filesystem>
 
+
 //#include <boost/json/src.hpp>
 //#include <boost/json.hpp>
 
-#include "include/potion.hpp"
+//#include "include/potion.hpp"
 #include "fl.hpp"
 
 namespace fs = std::filesystem;
@@ -12,6 +13,10 @@ namespace json = boost::json;
 route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
   
   //return response->render("home.html");
+  //
+  std::vector<std::byte>* buffer = request->get_bytestream();
+  std::cout << sizeof(buffer) << std::endl;
+
   return response->serve_static_file("home.html");
 }
 
