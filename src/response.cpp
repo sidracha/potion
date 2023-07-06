@@ -216,13 +216,96 @@ route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) 
 }
 */
 
+typedef struct {
+  size_t start_byte;
+  size_t end_byte;
+} byte_range_struct_t;
+
+
+
+
+static byte_range_struct_t get_byte_range(std::string content_range_str, size_t file_size) {
+  size_t start_byte = 0;
+  size_t end_byte = file_size - 1;
+
+  byte_range_struct_t byr;
+  byr.start_byte = start_byte;
+  byr.end_byte = end_byte;
+
+  if (content_range_str == "") {
+    return byr;
+  }
+  std::string byte_str = "";
+  int j = 0;
+  for (int i = 0; i < content_range_str.length(); i++) {
+    if (content_range_str[i] == '-') {
+      j = i;
+      break;
+    }
+    byte_str += content_range_str[i];
+    j = i;
+  }
+  try {
+    
+    start_byte = std::stoi(byte_str);
+    byr.start_byte = start_byte; 
+
+  } catch (const std::exception& e) {
+    return byr;
+  }
+  if (j >= content_range_str.length()) {
+    return byr;
+  }
+  byte_str = "";
+  for (int i = j; i < content_range_str.length(); i++) {
+    byte_str += content_range_str[i];
+  }
+  try {
+    end_byte = std::stoi(byte_str);
+    if (end_byte >= file_size) {
+      return byr;
+    }
+    byr.end_byte = end_byte;
+  
+  } catch (const std::exception& e) {
+    return byr;
+  }
+  
+  return byr;
+
+}
+
 route_struct_t Response::send_file(std::string file_path, std::string content_type) {
   
 
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;
   size_t f_size = fs::file_size(p);
+  
+  byte_range_struct_t byr = get_byte_range(request->get_header_value("Content-Range"), f_size);
+  
+  std::ifstream file(p);
+  file.seekg(byr.start_byte);
 
+  size_t to_be_read_size = byr.end_byte - byr.start_byte + 1;
+
+  set_header("Content-Type", content_type);
+  set_header("Content-Length", std::to_string(to_be_read_size));
+  set_header("Accept-Ranges", "bytes");
+  std::string headers = build_headers(200, true);
+  size_t header_len = headers.length();
+  size_t buffer_size = header_len + to_be_read_size;
+
+  char* buffer = new char[buffer_size];
+  populate_headers(buffer, buffer_size, headers);
+
+  file.read(buffer + header_len, to_be_read_size);
+  route_struct_t routeStruct;
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = buffer_size;
+  return routeStruct;
+  
+  /*
   std::string http_response = 
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: " + content_type + "\r\n"
@@ -241,15 +324,17 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
   }
   std::ifstream file(p);
   
+  byte_range_struct_t byr = get_byte_range();
+
+  file.seekg(byr.start_byte);
 
   file.read(buffer + header_len, f_size);
   route_struct_t routeStruct;
   routeStruct.buffer = buffer;
   routeStruct.buffer_size = buffer_size;
   return routeStruct;
-  
+  */
 }
-
 
 void Response::set_header(std::string key, std::string value) {
   header_vect_struct_t hv;
