@@ -7,6 +7,7 @@
 #include <cstring>
 #include <cstddef>
 #include <vector>
+#include <signal.h>
 
 #include "../include/tcpserver_unix.hpp"
 
@@ -15,7 +16,8 @@ TCPServer::TCPServer(int port) : portno(port){
   
   int reuse = 1;
   setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
-
+  
+  signal(SIGPIPE, SIG_IGN); 
   if (sockfd < 0) {
     error("ERROR opening socket");
   }
@@ -101,8 +103,9 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
 
 
 void TCPServer::send(char* buffer, size_t size, int socket) {
+  
+  //char buffer2[34] = "HTTP/1.1 405 Method Not allowed\r\n";
 
-   
   int n = write(socket, buffer, size);
 
   if (n < 0) { //need to change 

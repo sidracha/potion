@@ -68,7 +68,7 @@ void PotionApp::run () {
   //return;
   
   ThreadPool threadPool;
-  threadPool.start_threads(2, this);
+  threadPool.start_threads(50, this);
   
   while (1) { //entire loop of app
     

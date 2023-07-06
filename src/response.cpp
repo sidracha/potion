@@ -332,13 +332,13 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
     //std::cout << "OK\n";
   //}
   return routeStruct;
-   
+    
   /* 
   std::string http_response = 
     "HTTP/1.1 200 OK\r\n"
     "Content-Type: " + content_type + "\r\n"
     "Content-Length: " + std::to_string(f_size) + "\r\n"
-    "Accept-Ranges: bytes\r\n"
+    //"Accept-Ranges: bytes\r\n"
     "\r\n";
 
 
