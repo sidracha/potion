@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include <thread>
 #include <map>
+#include <variant>
 
 
 #include "tcpserver_unix.hpp"

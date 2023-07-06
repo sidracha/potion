@@ -11,13 +11,7 @@ namespace fs = std::filesystem;
 namespace json = boost::json;
 
 route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
-  
-  //return response->render("home.html");
-  //
-  std::vector<std::byte>* buffer = request->get_bytestream();
-  std::cout << sizeof(buffer) << std::endl;
-
-  return response->serve_static_file("home.html");
+  return response->serve_static_file("index.html");
 }
 
 route_struct_t handle_get_string(PotionApp* app, Request* request, Response* response) {
