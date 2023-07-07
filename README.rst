@@ -1,7 +1,7 @@
 Potion
 =====
 
-Potion is a very lightweight and somewhat high-performance web microframework. Potion provides the barebones features for a comprehensive web application in a featherweight package. Potion was inspired by Python's Flask microframework.
+Potion is a very lightweight and somewhat high-performance HTTP microframework. Potion provides the barebones features for a comprehensive web application in a featherweight package. Potion was inspired by Python's Flask microframework.
 
 **Please do not use this for any serious or commercial applications; bad things will happen if you do. It was just a small thing I wrote for fun because I was bored over the summer.**
 
