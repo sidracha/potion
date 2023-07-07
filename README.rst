@@ -77,7 +77,9 @@ To return anything from the handler function, use the given return methods in th
 .. code-block:: C++
 
     route_struct_t send_string(std::string str); //returns a string
-    route_struct_t send_status_code(int status_code); //returns HTTP status code and nothing else
+    route_struct_t send_status_code(int status_code, boost::json::object); //returns HTTP status code and JSON object as data
+    //pass in empty object if no data to be sent
+
     route_struct_t send_file(std::string file_path, std::string content_type); //sends a file
     route_struct_t serve_static_file(std::string file_path); //sends the file found in the /static file folder
     route_struct_t send_json(boost::json::object obj); //sends a boost/json object
