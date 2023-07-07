@@ -25,7 +25,7 @@ route_struct_t handle_get_img(PotionApp* app, Request* request, Response* respon
 } 
 
 route_struct_t handle_get_video(PotionApp*app, Request* request, Response* response) {
-  return response->send_file("crashothy.mp4", "video/mp4");
+  return response->send_file("longvid.mp4", "video/mp4");
 }
 
 route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* response) {
