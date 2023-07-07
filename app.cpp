@@ -37,7 +37,7 @@ route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* resp
 route_struct_t handle_status_code(PotionApp* app, Request* request, Response* response) {
   json::object obj;
   obj["hello"] = 50;
-  return response->send_status_code(404, obj);
+  return response->send_status_code(1, obj);
 }
 
 route_struct_t handle_post_json(PotionApp* app, Request* request, Response* response) {

@@ -164,7 +164,10 @@ route_struct_t Response::send_status_code_no_data(int status_code) {
 }
 
 route_struct_t Response::send_status_code(int status_code, json::object obj) {
-
+  
+  if (code_to_phrase(status_code) == "") {
+    return send_status_code_no_data(500);
+  }
   
   //fix this shit very bad
   std::string s = json::serialize(obj);
