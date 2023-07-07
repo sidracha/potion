@@ -23,7 +23,11 @@ Sessions
 Installing and Setting Up
 -----------------------
 
+Download the compiled binary for your architecture in the /bin folder.
+
 You will need to install the `boost`_ library as Potion uses the boost/json parser and serializer.
+
+Download the boost tarfile and unzip.
 
 
 Use the 
