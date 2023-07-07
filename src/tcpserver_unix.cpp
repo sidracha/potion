@@ -38,7 +38,8 @@ int TCPServer::accept_connection() {
   socklen_t clilen = sizeof(cli_addr);
   socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
   if (socket < 0) {
-    error("ERROR on accept");
+    return -1;
+    //error("ERROR on accept");
   }
   return socket;
 
@@ -79,7 +80,8 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
     }
     
     if (n < 0) {
-      error("ERROR reading from socket");
+      return receiveStruct;
+      //error("ERROR reading from socket");
     }
     if (static_cast<size_t>(n) < read_size) {
       break;
@@ -97,28 +99,29 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
   receiveStruct.buffer = buffer;
   receiveStruct.bytes_read = static_cast<size_t>(bytes_read);
   return receiveStruct;
-
     
 }
 
 
 void TCPServer::send(char* buffer, size_t size, int socket) {
   
-  //char buffer2[34] = "HTTP/1.1 405 Method Not allowed\r\n";
+
 
   int n = write(socket, buffer, size);
-
+  
   if (n < 0) { //need to change 
-    error("ERROR writing to socket");
+    //error("Error writing to socket");
+    //std::cout << "broken pipe\n"
+
   }
 
 }
 
-void TCPServer::send_str(const std::string& msg, int socket) {
-  int n = write(socket, msg.c_str(), msg.length());
+void TCPServer::send_str(const std::string& str, int socket) {
+  int n = write(socket, str.c_str(), str.length());
 
   if (n < 0) {
-    error("ERROR writing to socket");
+    //error("ERROR writing to socket");
   }
 }
 

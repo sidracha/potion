@@ -29,10 +29,10 @@ void r_test(std::string route) {
 
 route_struct_t Response::send_string(std::string str) {
   
-  std::string headers = 
-    "HTTP/1.1 200 OK\r\n"
-    "Content-Type: text/plain\r\n"
-    "\r\n";
+  
+  set_header("Content-Type", "text/plain");
+  std::string headers = build_headers(200, true);
+
 
   route_struct_t routeStruct;
   char* buffer = new char[str.length() + headers.length()];
@@ -139,33 +139,6 @@ route_struct_t Response::send_json(json::object obj) {
 
 }
 
-route_struct_t Response::render(std::string file_path) {
-  fs::path path = file_path;
-  fs::path p = fs::current_path() / path;
-  size_t f_size = fs::file_size(p);
-  
-  set_header("Content-Type", "text/html");
-  set_header("Content-Length", std::to_string(f_size));
-  std::string headers = build_headers(200, true);
-
-  size_t header_len = headers.length();
-  size_t buffer_size = f_size + header_len;
-
-  char* buffer = new char[buffer_size];
-  
-  for (size_t i = 0; i < header_len; i++) {
-    buffer[i] = headers[i];
-  }
-
-  std::ifstream file(p);
-  file.read(buffer + header_len, f_size);
-
-  route_struct_t routeStruct;
-  routeStruct.buffer = buffer;
-  routeStruct.buffer_size = buffer_size;
-  return routeStruct;
-}
-
 route_struct_t Response::send_status_code(int status_code) {
 
   std::string str = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";
@@ -177,44 +150,6 @@ route_struct_t Response::send_status_code(int status_code) {
   return routeStruct;
 }
 
-/*
-route_struct_t Response::send_status_code(PotionApp* app, uint16_t status_code) {
-  
-  //for now only 404 and 405 supported add later
-  //add enum class later
-  
-  std::string status_404 = "HTTP/1.1 404 Not Found\r\n";
-  std::string status_405 = "HTTP/1.1 405 Method Not Allowed\r\n";
-  
-  route_struct_t routeStruct;
-  switch (status_code) {
-      
-    case 404: {
-              
-      char* buffer = new char[status_404.length()];
-      string_to_char(status_404, buffer);
-      routeStruct.buffer = buffer;
-      routeStruct.buffer_size = status_404.length();
-      break;
-    }
-    case 405: {
-              
-      char* buffer = new char[status_405.length()];
-      string_to_char(status_405, buffer);
-      routeStruct.buffer = buffer;
-      routeStruct.buffer_size = status_405.length();
-      break;
-    }
-    
-    default: {
-      error("Invalid status code return");
-    }
-  }
-
-  return routeStruct;
-
-}
-*/
 
 typedef struct {
   size_t start_byte;
@@ -277,6 +212,9 @@ static byte_range_struct_t get_byte_range(std::string content_range_str, size_t 
 }
 
 route_struct_t Response::send_file(std::string file_path, std::string content_type) {
+  
+
+  //something fucky is going on here -> broken pipe when running on mac so I just took the error out of the sockets layer
 
   fs::path path = file_path;
   fs::path p = fs::current_path() / path;

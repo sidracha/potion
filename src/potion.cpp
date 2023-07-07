@@ -33,34 +33,6 @@ PotionApp::PotionApp(int port) : server(port) {
 
 }
 
-/*
-void test() {
-
-  fs::path current_file = fs::absolute(__FILE__);
-  std::cout << current_file << std::endl;
-  
-  fs::path templates_folder = "../frontend/templates";
-  fs::path path = current_file / templates_folder;
-  std::string str = path.string();
-  std::cout << str << std::endl;
-  
-  int i = last_index_of(str, '/');
-
-  std::cout << i << std::endl;
-  return;
-  std::cout << path << std::endl;
-
-  size_t fsize = fs::file_size(path);
-  char buffer[fsize];
-  std::ifstream file(path);
-  file.read(buffer, fsize);
-
-
-
-}
-
-*/
-
 
 void PotionApp::run () {
 
@@ -73,6 +45,9 @@ void PotionApp::run () {
   while (1) { //entire loop of app
     
     int socket = server.accept_connection();
+    if (socket < 0) {
+      continue;
+    }
     threadPool.add_job(socket);
 
   }
