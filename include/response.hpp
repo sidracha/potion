@@ -42,7 +42,7 @@ class Response {
 
     route_struct_t send_string(std::string str);
     route_struct_t render(std::string file_path);
-    route_struct_t send_status_code(int status_code);
+    route_struct_t send_status_code(int status_code, json::object obj);
     route_struct_t send_file(std::string file, std::string content_type);
     
     route_struct_t send_js_file(std::string file_path);

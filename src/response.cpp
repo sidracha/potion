@@ -62,7 +62,8 @@ route_struct_t Response::serve_static_file(std::string file_path) {
   fs::path path = fp;
   //std::cout << fp << std::endl;
   if (!file_exists(fp)) {
-    return send_status_code(404);
+    json::object emptyobj;
+    return send_status_code(404, emptyobj);
   }
   //std::cout << "here\n";  
   size_t f_size = fs::file_size(path);
@@ -114,6 +115,7 @@ route_struct_t Response::create_route_struct(char* buffer, size_t buffer_size) {
 
 route_struct_t Response::send_json(json::object obj) {
   
+
   std::string s = json::serialize(obj);
   //std::cout << s << std::endl;
   set_header("Content-Type", "application/json");
@@ -139,15 +141,39 @@ route_struct_t Response::send_json(json::object obj) {
 
 }
 
-route_struct_t Response::send_status_code(int status_code) {
+route_struct_t Response::send_status_code(int status_code, json::object obj) {
 
-  std::string str = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";
+  
+  //fix this shit very bad
+  std::string s = json::serialize(obj);
   route_struct_t routeStruct;
-  char* buffer = new char[str.length()];
-  string_to_char(str, buffer);
+  
+  if (s == "{}") {
+    std::cout << "here\n";
+    std::string to_send = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";  
+    char* buffer = new char[to_send.length()];
+    string_to_char(to_send, buffer);
+    routeStruct.buffer = buffer;
+    routeStruct.buffer_size = to_send.length();
+    return routeStruct;
+  }
+
+  set_header("Content-Type", "application/json");
+  set_header("Content-Length", std::to_string(s.length()));
+  std::string headers = build_headers(status_code, true);
+  size_t header_len = headers.length();
+  size_t buffer_size = header_len + s.length();
+  char* buffer = new char[buffer_size];
+  for(size_t i = 0; i < header_len; i++) {
+    buffer[i] = headers[i];
+  }
+  for (size_t i = 0; i < s.length(); i++) {
+    buffer[i+header_len] = s[i];
+  }
   routeStruct.buffer = buffer;
-  routeStruct.buffer_size = str.length();
+  routeStruct.buffer_size = buffer_size;
   return routeStruct;
+
 }
 
 

@@ -11,7 +11,7 @@ namespace fs = std::filesystem;
 namespace json = boost::json;
 
 route_struct_t handle_get_home(PotionApp* app, Request* request, Response* response) {
-  return response->serve_static_file("index.html");
+  return response->serve_static_file("home.html");
 }
 
 route_struct_t handle_get_string(PotionApp* app, Request* request, Response* response) {
@@ -32,6 +32,12 @@ route_struct_t handle_get_hello(PotionApp* app, Request* request, Response* resp
   std::map<std::string, std::string> args = request->get_args();
   std::cout << args["key1"] << std::endl;
   return response->send_string("Hi!");
+}
+
+route_struct_t handle_status_code(PotionApp* app, Request* request, Response* response) {
+  json::object obj;
+  obj["hello"] = 50;
+  return response->send_status_code(404, obj);
 }
 
 route_struct_t handle_post_json(PotionApp* app, Request* request, Response* response) {
@@ -70,6 +76,7 @@ int main () {
   app.config["STATIC_FOLDER"] = "tests/static";
 
   app.set_get("/", &handle_get_home);
+  app.set_get("/code", &handle_status_code);
   app.set_get("/string", &handle_get_string);
   app.set_get("/image", &handle_get_img);
   app.set_get("/video", &handle_get_video);
