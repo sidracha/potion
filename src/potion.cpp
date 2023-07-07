@@ -65,7 +65,6 @@ void PotionApp::handle_connection(int socket) {
 
   //receive_struct_t receiveStruct = server.receive(std::get<int>(config["READ_TIMEOUT"]), socket, std::get<int>(config["READ_SIZE"]) * KB, 5);
   route_struct_t routeStruct;
-  json::object emptyobj;
 
   if (receiveStruct.bytes_read == 0) {
     std::string http_response = "HTTP/1.1 504 Gateway Timeout";
@@ -96,10 +95,10 @@ void PotionApp::handle_connection(int socket) {
     routeStruct = response.serve_static_file(route);
   }
   else if (!route_map.count(route)) {
-    routeStruct = response.send_status_code(404, emptyobj);
+    routeStruct = response.send_status_code_no_data(404);
   }
   else if (!route_map[route].count(method)) {
-    routeStruct = response.send_status_code(405, emptyobj);
+    routeStruct = response.send_status_code_no_data(405);
   }
   else {
     route_handler_func_t* func = route_map[route][method];
@@ -113,9 +112,11 @@ void PotionApp::handle_connection(int socket) {
 
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
   close_request(receiveStruct, routeStruct, socket);
+  
+
 
   std::string req_out = "<" + method + " " + route + ">";
-  //std::cout << req_out << std::endl;
+  std::cout << req_out << std::endl;
   //std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
   //int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
   //std::cout << static_folder << " " << read_timeout << std::endl;

@@ -62,8 +62,7 @@ route_struct_t Response::serve_static_file(std::string file_path) {
   fs::path path = fp;
   //std::cout << fp << std::endl;
   if (!file_exists(fp)) {
-    json::object emptyobj;
-    return send_status_code(404, emptyobj);
+    return send_status_code_no_data(404);
   }
   //std::cout << "here\n";  
   size_t f_size = fs::file_size(path);
@@ -141,6 +140,29 @@ route_struct_t Response::send_json(json::object obj) {
 
 }
 
+std::string Response::build_status_code_header(int status_code) {
+  if (code_to_phrase(status_code) == "") {
+    return "";
+  }
+  return "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code);
+}
+
+route_struct_t Response::send_status_code_no_data(int status_code) {
+  if (code_to_phrase(status_code) == "") {
+    return send_status_code_no_data(500);
+  } 
+
+
+  std::string resp = build_status_code_header(status_code);
+  char* buffer = new char[resp.length()];
+  string_to_char(resp, buffer);
+  route_struct_t routeStruct;
+  routeStruct.buffer = buffer;
+  routeStruct.buffer_size = resp.length();
+  return routeStruct;
+
+}
+
 route_struct_t Response::send_status_code(int status_code, json::object obj) {
 
   
@@ -149,7 +171,6 @@ route_struct_t Response::send_status_code(int status_code, json::object obj) {
   route_struct_t routeStruct;
   
   if (s == "{}") {
-    std::cout << "here\n";
     std::string to_send = "HTTP/1.1 " + std::to_string(status_code) + " " + code_to_phrase(status_code) + "\r\n";  
     char* buffer = new char[to_send.length()];
     string_to_char(to_send, buffer);
@@ -177,6 +198,7 @@ route_struct_t Response::send_status_code(int status_code, json::object obj) {
 }
 
 
+
 typedef struct {
   size_t start_byte;
   size_t end_byte;
@@ -188,7 +210,6 @@ typedef struct {
 static byte_range_struct_t get_byte_range(std::string content_range_str, size_t file_size) {
   size_t start_byte = 0;
   size_t end_byte = file_size - 1;
-  std::cout << content_range_str << std::endl;
   byte_range_struct_t byr;
   byr.start_byte = start_byte;
   byr.end_byte = end_byte;
@@ -255,7 +276,6 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
   file.seekg(byr.start_byte);
 
   size_t to_be_read_size = byr.end_byte - byr.start_byte + 1;
-  std::cout << byr.start_byte << " " << byr.end_byte << std::endl;
 
   set_header("Content-Type", content_type);
   set_header("Content-Length", std::to_string(to_be_read_size));

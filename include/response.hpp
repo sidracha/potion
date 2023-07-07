@@ -36,6 +36,7 @@ class Response {
     std::string build_headers(int code, bool content);
     void populate_headers(char* buffer, size_t buffer_size, std::string headers);
     route_struct_t create_route_struct(char* buffer, size_t buffer_size);
+    std::string build_status_code_header(int status_code);
 
   public:
     Response(Request* r);
@@ -43,6 +44,8 @@ class Response {
     route_struct_t send_string(std::string str);
     route_struct_t render(std::string file_path);
     route_struct_t send_status_code(int status_code, json::object obj);
+    route_struct_t send_status_code_no_data(int status_code);
+
     route_struct_t send_file(std::string file, std::string content_type);
     
     route_struct_t send_js_file(std::string file_path);
