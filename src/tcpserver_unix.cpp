@@ -39,7 +39,6 @@ int TCPServer::accept_connection() {
   socket = accept(sockfd, (struct sockaddr *) &cli_addr, &clilen);
   if (socket < 0) {
     return -1;
-    //error("ERROR on accept");
   }
   return socket;
 
@@ -59,7 +58,6 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
   receive_struct_t receiveStruct;
 
   int activity = select(socket + 1, &readSet, nullptr, nullptr, &timeout); 
-  //receive_struct_t* receiveStruct = new receive_struct_t();
   
   
   if (activity == 0) {
@@ -72,7 +70,6 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
   int bytes_read = 0;
   while (1) {
     n = read(socket, (*buffer).data() + (*buffer).size() - read_size, read_size);
-    //bytes_read += n;
     
     
     if (n > 0) {
@@ -81,7 +78,6 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
     
     if (n < 0) {
       return receiveStruct;
-      //error("ERROR reading from socket");
     }
     if (static_cast<size_t>(n) < read_size) {
       break;
@@ -95,7 +91,6 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
     }    
 
   }
-  //size_t bytes_read = (*buffer).size();
   receiveStruct.buffer = buffer;
   receiveStruct.bytes_read = static_cast<size_t>(bytes_read);
   return receiveStruct;
@@ -104,15 +99,11 @@ receive_struct_t TCPServer::receive(int socket, int timeout_val, size_t read_siz
 
 
 void TCPServer::send(char* buffer, size_t size, int socket) {
-  
-
 
   int n = write(socket, buffer, size);
   
   if (n < 0) { //need to change 
-    //error("Error writing to socket");
-    //std::cout << "broken pipe\n"
-
+  
   }
 
 }
@@ -121,7 +112,6 @@ void TCPServer::send_str(const std::string& str, int socket) {
   int n = write(socket, str.c_str(), str.length());
 
   if (n < 0) {
-    //error("ERROR writing to socket");
   }
 }
 

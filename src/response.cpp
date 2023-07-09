@@ -52,19 +52,14 @@ route_struct_t Response::send_string(std::string str) {
 
 route_struct_t Response::serve_static_file(std::string file_path) {
   
-  //std::string static_path = app->config["STATIC_FOLDER"] + file_path;
   route_struct_t routeStruct; 
-  //std::cout << file_path << std::endl;
   if (file_path[0] == '/') {
     file_path = file_path.substr(1, file_path.length()-1);
   }
   std::string fp = STATIC_FOLDER + "/" + file_path;
-  fs::path path = fp;
-  //std::cout << fp << std::endl;
   if (!file_exists(fp)) {
     return send_status_code_no_data(404);
   }
-  //std::cout << "here\n";  
   size_t f_size = fs::file_size(path);
   
   set_header("Content-Type", extension_to_content_type(get_file_extension(file_path)));
@@ -116,14 +111,12 @@ route_struct_t Response::send_json(json::object obj) {
   
 
   std::string s = json::serialize(obj);
-  //std::cout << s << std::endl;
   set_header("Content-Type", "application/json");
   set_header("Content-Length", std::to_string(s.length()));
   std::string headers = build_headers(200, true);
   
   size_t buffer_size = s.length() + headers.length();
   char* buffer = new char[buffer_size];
-  //populate_headers(buffer, buffer_size, headers);
   
   for (size_t i = 0; i < headers.length(); i++) {
     buffer[i] = headers[i];
@@ -135,7 +128,6 @@ route_struct_t Response::send_json(json::object obj) {
   
 
   std::vector vect = value_to<std::vector<int>>(obj["list"]);
-  //std::cout << vect[2]<< std::endl;
   return create_route_struct(buffer, buffer_size);
 
 }
@@ -296,12 +288,10 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
   
   
   
-  //std::string headers = build_headers(200, true);
   size_t header_len = headers.length();
   size_t buffer_size = header_len + to_be_read_size;
 
   char* buffer = new char[buffer_size];
-  //populate_headers(buffer, buffer_size, headers);
   
   for (int i = 0; i < header_len; i++) {
     buffer[i] = headers[i];
@@ -311,44 +301,8 @@ route_struct_t Response::send_file(std::string file_path, std::string content_ty
   route_struct_t routeStruct;
   routeStruct.buffer = buffer;
   routeStruct.buffer_size = buffer_size;
-  //std::cout << buffer_size << std::endl;
-  //std::cout << to_be_read_size << " " << f_size << std::endl;
-  //std::cout << headers << std::endl;
-  
-  //if (buffer_size == to_be_read_size + header_len) {
-    //std::cout << "OK\n";
-  //}
   return routeStruct;
     
-  /* 
-  std::string http_response = 
-    "HTTP/1.1 200 OK\r\n"
-    "Content-Type: " + content_type + "\r\n"
-    "Content-Length: " + std::to_string(f_size) + "\r\n"
-    //"Accept-Ranges: bytes\r\n"
-    "\r\n";
-
-
-  size_t header_len = http_response.length();
-  //size_t buffer_size = header_len + f_size;
-  size_t buffer_size = f_size + header_len;
-  char* buffer = new char[buffer_size];
-  
-  for (size_t i = 0; i < header_len; i++) {
-    buffer[i] = http_response[i];
-  }
-  std::ifstream file(p);
-  
-  //byte_range_struct_t byr = get_byte_range();
-
-  //file.seekg(byr.start_byte);
-
-  file.read(buffer + header_len, f_size);
-  route_struct_t routeStruct;
-  routeStruct.buffer = buffer;
-  routeStruct.buffer_size = buffer_size;
-  return routeStruct;
-  */ 
 }
 
 void Response::set_header(std::string key, std::string value) {

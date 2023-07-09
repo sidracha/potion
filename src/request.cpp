@@ -7,29 +7,10 @@
 #include "../include/tcpserver_unix.hpp"
 #include "../include/request.hpp"
 #include "../include/utils.hpp"
-//#include <curl/curl.h>
 
 namespace json = boost::json;
 
 void Request::parse_headers() {
-  
-
-  /*
-  std::string ro = "";
-  for (size_t i = 0; i < receiveStruct.bytes_read; i++) {
-    
-    char b = static_cast<char>((*receiveStruct.buffer)[i]);
-    
-    std::cout << int(b) << " ";
-    if (b == '\n') {
-      std::cout << std::endl;
-    }
-
-    ro += b;
-  }
-  //std::cout << ro << std::endl;
-  */
-
 
   std::string line = "";
   std::vector<std::string> lines;
@@ -80,8 +61,6 @@ void Request::parse_headers() {
       content_start = i+2;
       break;
     }
-    //std::cout << "here\n";
-    //request_body += character;
     if (character == '\r') {
       lines.push_back(line);
       line = "";
@@ -120,7 +99,6 @@ void Request::parse_headers() {
     }
 
   }
-  //std::cout << "here\n"; 
   std::string word = "";
   std::string key = "";
   std::string word2 = "";
@@ -152,18 +130,7 @@ void Request::parse_headers() {
 
   
   }
-  //here we get the query params 
-  //need to support url encoding at some point. added to todo
-  
   parse_q_params();
-  
-  //std::cout << request_body << std::endl;
-  
-  //std::cout << "content start: " << content_start << std::endl;
-  //std::cout << "length: " << request_body.length() << std::endl;
-  //std::cout << "req-last: " << int(request_body[request_body.length()-1]) << std::endl;
-  //std::cout << "content-first: " << int((*receiveStruct.buffer)[content_start]) << std::endl;
-  //std::cout << (*receiveStruct.buffer)[content_start] << std::endl;
 }
 
 

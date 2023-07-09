@@ -35,9 +35,6 @@ PotionApp::PotionApp(int port) : server(port) {
 
 
 void PotionApp::run () {
-
-  //test();
-  //return;
   
   ThreadPool threadPool;
   threadPool.start_threads(50, this);
@@ -63,13 +60,11 @@ void PotionApp::handle_connection(int socket) {
   int buffer_size_max = std::get<int>(config["READ_SIZE_MAX"]);
   receive_struct_t receiveStruct = server.receive(socket, read_timeout, static_cast<size_t>(read_size*KB), static_cast<size_t>(buffer_size_max));
 
-  //receive_struct_t receiveStruct = server.receive(std::get<int>(config["READ_TIMEOUT"]), socket, std::get<int>(config["READ_SIZE"]) * KB, 5);
   route_struct_t routeStruct;
 
   if (receiveStruct.bytes_read == 0) {
     std::string http_response = "HTTP/1.1 504 Gateway Timeout";
     server.send_str(http_response, socket);
-    //close_request(receiveStruct, routeStruct, socket);
     delete receiveStruct.buffer;
     server.close_connection(socket);
     return;
@@ -105,10 +100,6 @@ void PotionApp::handle_connection(int socket) {
     routeStruct = func(this, &request, &response);
   }
 
-  
-  //for (size_t i = 0; i < routeStruct.buffer_size; i++) {
-    //std::cout << routeStruct.buffer[i];
-  //}
 
   server.send(routeStruct.buffer, routeStruct.buffer_size, socket);
   close_request(receiveStruct, routeStruct, socket);
@@ -117,9 +108,4 @@ void PotionApp::handle_connection(int socket) {
 
   std::string req_out = "<" + method + " " + route + ">";
   std::cout << req_out << std::endl;
-  //std::string static_folder = std::get<std::string>(config["STATIC_FOLDER"]);
-  //int read_timeout = std::get<int>(config["READ_TIMEOUT"]);
-  //std::cout << static_folder << " " << read_timeout << std::endl;
-  
-
 }
