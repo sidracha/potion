@@ -48,7 +48,7 @@ Make sure to also export
 
 environment variable OR run the executable like
 
-..code-block:: text
+.. code-block:: text
 
     LD_LIBBARY_PATH=./bin ./a.out
 
