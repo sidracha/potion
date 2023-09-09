@@ -40,6 +40,19 @@ Use the
 
 compiler flags when compiling your app. 
 
+Make sure to also export 
+
+.. code-block:: text
+
+    export LD_LIBRARY_PATH=./bin (or path to .library)
+
+environment variable OR run the executable like
+
+..code-block:: text
+
+    LD_LIBBARY_PATH=./bin ./a.out
+
+
 .. _boost: https://www.boost.org/doc/libs/1_82_0/more/getting_started/index.html
 
 Usage
