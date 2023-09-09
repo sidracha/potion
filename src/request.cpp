@@ -196,7 +196,7 @@ json::object Request::get_json() {
       std::cout << "JSON Parse failed\n";
       return obj;
     }
-    obj = value_to<json::object>(jv);
+    obj = json::value_to<json::object>(jv);
   }
   catch(std::bad_alloc const& e) {
     std::cout << "JSON Parse failed\n";

@@ -128,7 +128,7 @@ route_struct_t Response::send_json(json::object obj) {
   }
   
 
-  std::vector vect = value_to<std::vector<int>>(obj["list"]);
+  std::vector vect = json::value_to<std::vector<int>>(obj["list"]);
   return create_route_struct(buffer, buffer_size);
 
 }

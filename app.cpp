@@ -63,7 +63,7 @@ int main () {
   obj["list"] = value;
   json::value v2 = obj["list"];
   
-  std::vector<int> arr = value_to<std::vector<int>>(v2);
+  std::vector<int> arr = json::value_to<std::vector<int>>(v2);
 
   //std::cout << v2[2] << std::endl;
   
